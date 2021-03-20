@@ -96,7 +96,7 @@ void Shader::SetMatrix4(const char *name, const glm::mat4 &matrix, bool useShade
 }
 
 
-void Shader::checkCompileErrors(unsigned int object, const std::string& type) {
+void Shader::checkCompileErrors(unsigned int object, const std::string &type) {
     int success;
     char infoLog[1024];
     if (type != "PROGRAM") {
@@ -106,6 +106,8 @@ void Shader::checkCompileErrors(unsigned int object, const std::string& type) {
             std::cout << "| ERROR::SHADER: Compile-time error: Type: " << type << "\n"
                       << infoLog << "\n -- --------------------------------------------------- -- "
                       << std::endl;
+        } else {
+            std::cout << "Compiled " << type << std::endl;
         }
     } else {
         glGetProgramiv(object, GL_LINK_STATUS, &success);
@@ -114,6 +116,8 @@ void Shader::checkCompileErrors(unsigned int object, const std::string& type) {
             std::cout << "| ERROR::Shader: Link-time error: Type: " << type << "\n"
                       << infoLog << "\n -- --------------------------------------------------- -- "
                       << std::endl;
+        } else {
+            std::cout << "Linked" << std::endl;
         }
     }
 }

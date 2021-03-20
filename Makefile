@@ -278,6 +278,33 @@ src/shader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/shader.cpp.s
 .PHONY : src/shader.cpp.s
 
+src/sprite_renderer.o: src/sprite_renderer.cpp.o
+
+.PHONY : src/sprite_renderer.o
+
+# target to build an object file
+src/sprite_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/sprite_renderer.cpp.o
+.PHONY : src/sprite_renderer.cpp.o
+
+src/sprite_renderer.i: src/sprite_renderer.cpp.i
+
+.PHONY : src/sprite_renderer.i
+
+# target to preprocess a source file
+src/sprite_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/sprite_renderer.cpp.i
+.PHONY : src/sprite_renderer.cpp.i
+
+src/sprite_renderer.s: src/sprite_renderer.cpp.s
+
+.PHONY : src/sprite_renderer.s
+
+# target to generate assembly for a file
+src/sprite_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/sprite_renderer.cpp.s
+.PHONY : src/sprite_renderer.cpp.s
+
 src/stb_image.o: src/stb_image.cpp.o
 
 .PHONY : src/stb_image.o
@@ -356,6 +383,9 @@ help:
 	@echo "... src/shader.o"
 	@echo "... src/shader.i"
 	@echo "... src/shader.s"
+	@echo "... src/sprite_renderer.o"
+	@echo "... src/sprite_renderer.i"
+	@echo "... src/sprite_renderer.s"
 	@echo "... src/stb_image.o"
 	@echo "... src/stb_image.i"
 	@echo "... src/stb_image.s"

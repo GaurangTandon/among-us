@@ -51,7 +51,7 @@ private:
     // checks if compilation or linking failed and if so, print the error logs
     static void checkCompileErrors(unsigned int object, const std::string& type);
 
-    unsigned int compileShader(unsigned int type, const char *source);
+    static unsigned int compileShader(unsigned int type, const char *source);
 };
 
 #endif //ASSIGNMENT_SHADER_H
