@@ -106,8 +106,6 @@ void Shader::checkCompileErrors(unsigned int object, const std::string &type) {
             std::cout << "| ERROR::SHADER: Compile-time error: Type: " << type << "\n"
                       << infoLog << "\n -- --------------------------------------------------- -- "
                       << std::endl;
-        } else {
-            std::cout << "Compiled " << type << std::endl;
         }
     } else {
         glGetProgramiv(object, GL_LINK_STATUS, &success);
@@ -116,8 +114,6 @@ void Shader::checkCompileErrors(unsigned int object, const std::string &type) {
             std::cout << "| ERROR::Shader: Link-time error: Type: " << type << "\n"
                       << infoLog << "\n -- --------------------------------------------------- -- "
                       << std::endl;
-        } else {
-            std::cout << "Linked" << std::endl;
         }
     }
 }

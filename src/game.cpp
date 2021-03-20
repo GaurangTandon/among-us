@@ -14,7 +14,7 @@ Game::~Game() {
 }
 
 #define pathToShader(filename) "assets/shaders/" filename
-#define pathToTextures(filename) "assets/textures/" filename
+#define pathToTexture(filename) "assets/textures/" filename
 
 void Game::Init() {
     ResourceManager::LoadShader(pathToShader("sprite.vs"), pathToShader("sprite.fs"), nullptr, "sprite");
@@ -33,7 +33,7 @@ void Game::Init() {
     auto x = ResourceManager::GetShader("sprite");
     Renderer = new SpriteRenderer(x);
     // load textures
-    ResourceManager::LoadTexture(pathToTextures("awesomeface.png"), true, "face");
+    ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "face");
 }
 
 void Game::Update(double dt) {
