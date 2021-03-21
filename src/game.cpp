@@ -36,6 +36,8 @@ void Game::Init() {
     Renderer = new SpriteRenderer(x);
     // load textures
     ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "face");
+    ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "room");
+    ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "door");
 
     maze = new GameMaze();
 }
@@ -50,9 +52,6 @@ void Game::ProcessInput(double dt) {
 
 void Game::Render() {
     if (this->State == GAME_ACTIVE) {
-        auto x = ResourceManager::GetTexture("face");
-        Renderer->DrawSprite(x, glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-
         maze->Draw(*Renderer);
     }
 }

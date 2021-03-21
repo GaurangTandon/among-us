@@ -6,19 +6,21 @@
 #include <utility>
 #include <bitset>
 #include "game_room.h"
+#include "resource_manager.h"
 
 // Do we want to store powerups etc. as part of rooms or inside maze only?
 class GameMaze {
 private:
     std::vector<GameRoom> rooms;
+    int width, height;
 
-    std::vector<std::bitset<4>> generateTree(int width, int height, int seed = 0) {
+    std::vector<std::bitset<4>> generateTree(int seed = 0) {
         srand(seed);
         using PII = std::pair<int, int>;
         int dx[4] = {-1, 1, 0, 0};
         int dy[4] = {0, 0, -1, 1};
 
-        std::vector<std::vector<bool>> visited(width, std::vector<bool>(height, 0));
+        std::vector<std::vector<bool>> visited(width, std::vector<bool>(height, false));
         std::stack<PII> st;
 
         visited[0][0] = true;
@@ -59,33 +61,35 @@ private:
         return door_data;
     }
 
-    void generateRooms(int width = 3, int height = 3) {
+    void generateRooms() {
         int nodes = width * height;
-        auto treedata = generateTree(width, height);
+        auto treeData = generateTree();
         rooms.reserve(nodes);
 
         auto base = glm::vec2(0.0f, 0.0f);
-        int room_idx = -1;
 
-        Texture2D roomSprite;
+        for (int room_idx = 0; room_idx < nodes; room_idx++) {
+            float row = room_idx / width, col = room_idx % width;
 
-        for (auto &room : rooms) {
-            room_idx++;
-            int row = room_idx / width, col = room_idx % width;
-
-            glm::vec2 offset((col - 1) * 1, (row - 1) * 1);
+            glm::vec2 offset(col * GameRoom::SIZE[0], row * GameRoom::SIZE[1]);
 
             auto position = base + offset;
 
-            room = GameRoom(position, roomSprite, treedata[room_idx]);
+            auto roomSprite = ResourceManager::GetTexture("room");
+            rooms.emplace_back(position, roomSprite, treeData[room_idx]);
         }
     }
 
 public:
+    GameMaze(int w = 3, int h = 3) : width(w), height(h) {
+        generateRooms();
+    }
+
     void Draw(SpriteRenderer &renderer) {
-        for (auto &room : rooms) {
+        for (auto &room : rooms)
             room.Draw(renderer);
-        }
+        for (auto &room : rooms)
+            room.DrawAddons(renderer);
     }
 };
 

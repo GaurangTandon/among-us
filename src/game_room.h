@@ -10,10 +10,14 @@ private:
     std::vector<GameObject> doors;
 
 public:
-    GameRoom(glm::vec2 pos, Texture2D sprite, std::bitset<4> doors, glm::vec2 size = glm::vec2(1.0f),
+    constexpr static glm::vec2 SIZE = glm::vec2(200.0f, 200.0f);
+
+    GameRoom(glm::vec2 pos, Texture2D sprite, std::bitset<4> doors, glm::vec2 size = SIZE,
              glm::vec3 color = glm::vec3(1.0f));
 
     void Draw(SpriteRenderer &renderer) override;
+
+    void DrawAddons(SpriteRenderer &renderer);
 };
 
 
