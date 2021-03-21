@@ -47,7 +47,25 @@ void Game::Update(double dt) {
 }
 
 void Game::ProcessInput(double dt) {
-#define pressed(x) (glfwGetKey(window, x) == GLFW_PRESS)
+#define pressed(x) (this->Keys[x])
+
+    if (this->State == GAME_ACTIVE) {
+        float velocity = 100.0f * float(dt);
+
+        std::map<unsigned int, glm::vec2> movers = {
+                {GLFW_KEY_W, glm::vec2(0.0f, -1.0f)},
+                {GLFW_KEY_A, glm::vec2(-1.0f, 0.0f)},
+                {GLFW_KEY_S, glm::vec2(0.0f, 1.0f)},
+                {GLFW_KEY_D, glm::vec2(1.0f, 0.0f)}
+        };
+
+        for (auto &[key, displace]: movers) {
+            if (pressed(key)) {
+                maze->moveAll(displace * velocity);
+                return;
+            }
+        }
+    }
 }
 
 void Game::Render() {

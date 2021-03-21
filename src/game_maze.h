@@ -91,6 +91,12 @@ public:
         for (auto &room : rooms)
             room.DrawAddons(renderer);
     }
+
+    void moveAll(const glm::vec2 &displace) {
+        for (auto &room : rooms) {
+            room.moveAll(displace);
+        }
+    }
 };
 
 

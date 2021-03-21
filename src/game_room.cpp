@@ -34,3 +34,12 @@ void GameRoom::DrawAddons(SpriteRenderer &renderer) {
 
     for (auto &door : doors) door.Draw(renderer);
 }
+
+
+void GameRoom::moveAll(const glm::vec2 &displace) {
+    Position += displace;
+
+    for (auto &door : doors) {
+        door.Position += displace;
+    }
+}

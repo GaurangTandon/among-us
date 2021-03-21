@@ -16,8 +16,8 @@ public:
              glm::vec3 color = glm::vec3(1.0f));
 
     void Draw(SpriteRenderer &renderer) override;
-
     void DrawAddons(SpriteRenderer &renderer);
+    void moveAll(const glm::vec2 &displace);
 };
 
 
