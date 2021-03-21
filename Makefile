@@ -197,6 +197,87 @@ src/game.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game.cpp.s
 .PHONY : src/game.cpp.s
 
+src/game_maze.o: src/game_maze.cpp.o
+
+.PHONY : src/game_maze.o
+
+# target to build an object file
+src/game_maze.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_maze.cpp.o
+.PHONY : src/game_maze.cpp.o
+
+src/game_maze.i: src/game_maze.cpp.i
+
+.PHONY : src/game_maze.i
+
+# target to preprocess a source file
+src/game_maze.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_maze.cpp.i
+.PHONY : src/game_maze.cpp.i
+
+src/game_maze.s: src/game_maze.cpp.s
+
+.PHONY : src/game_maze.s
+
+# target to generate assembly for a file
+src/game_maze.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_maze.cpp.s
+.PHONY : src/game_maze.cpp.s
+
+src/game_object.o: src/game_object.cpp.o
+
+.PHONY : src/game_object.o
+
+# target to build an object file
+src/game_object.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_object.cpp.o
+.PHONY : src/game_object.cpp.o
+
+src/game_object.i: src/game_object.cpp.i
+
+.PHONY : src/game_object.i
+
+# target to preprocess a source file
+src/game_object.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_object.cpp.i
+.PHONY : src/game_object.cpp.i
+
+src/game_object.s: src/game_object.cpp.s
+
+.PHONY : src/game_object.s
+
+# target to generate assembly for a file
+src/game_object.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_object.cpp.s
+.PHONY : src/game_object.cpp.s
+
+src/game_room.o: src/game_room.cpp.o
+
+.PHONY : src/game_room.o
+
+# target to build an object file
+src/game_room.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_room.cpp.o
+.PHONY : src/game_room.cpp.o
+
+src/game_room.i: src/game_room.cpp.i
+
+.PHONY : src/game_room.i
+
+# target to preprocess a source file
+src/game_room.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_room.cpp.i
+.PHONY : src/game_room.cpp.i
+
+src/game_room.s: src/game_room.cpp.s
+
+.PHONY : src/game_room.s
+
+# target to generate assembly for a file
+src/game_room.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_room.cpp.s
+.PHONY : src/game_room.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -374,6 +455,15 @@ help:
 	@echo "... src/game.o"
 	@echo "... src/game.i"
 	@echo "... src/game.s"
+	@echo "... src/game_maze.o"
+	@echo "... src/game_maze.i"
+	@echo "... src/game_maze.s"
+	@echo "... src/game_object.o"
+	@echo "... src/game_object.i"
+	@echo "... src/game_object.s"
+	@echo "... src/game_room.o"
+	@echo "... src/game_room.i"
+	@echo "... src/game_room.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

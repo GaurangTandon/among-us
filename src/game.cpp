@@ -1,8 +1,10 @@
 #include "game.h"
 #include "sprite_renderer.h"
 #include "resource_manager.h"
+#include "game_maze.h"
 
 SpriteRenderer *Renderer;
+GameMaze *maze;
 
 Game::Game(unsigned int width, unsigned int height)
         : State(GAME_ACTIVE), Keys(), Width(width), Height(height) {
@@ -10,7 +12,7 @@ Game::Game(unsigned int width, unsigned int height)
 }
 
 Game::~Game() {
-
+    delete Renderer;
 }
 
 #define pathToShader(filename) "assets/shaders/" filename
@@ -34,6 +36,8 @@ void Game::Init() {
     Renderer = new SpriteRenderer(x);
     // load textures
     ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "face");
+
+    maze = new GameMaze();
 }
 
 void Game::Update(double dt) {
@@ -45,7 +49,11 @@ void Game::ProcessInput(double dt) {
 }
 
 void Game::Render() {
-    auto x = ResourceManager::GetTexture("face");
-    Renderer->DrawSprite(x, glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    if (this->State == GAME_ACTIVE) {
+        auto x = ResourceManager::GetTexture("face");
+        Renderer->DrawSprite(x, glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        maze->Draw(*Renderer);
+    }
 }
 
