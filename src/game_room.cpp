@@ -14,7 +14,6 @@ GameRoom::GameRoom(glm::vec2 pos, Texture2D sprite, std::bitset<4> doors, glm::v
     };
 
     auto doorSprite = ResourceManager::GetTexture("door");
-    auto doorSize = glm::vec2(50, 50);
 
     for (int i = 0; i < 4; i++) {
         if (doors[i]) {
@@ -22,10 +21,10 @@ GameRoom::GameRoom(glm::vec2 pos, Texture2D sprite, std::bitset<4> doors, glm::v
             auto doorPos = pos + glm::vec2(offset[0] * size[0], offset[1] * size[1]);
 
             for (int j = 0; j < 2; j++)
-                if (offset[j] == 1) doorPos[j] -= doorSize[j];
-                else if (offset[j] > 0) doorPos[j] -= doorSize[j] / 2;
+                if (offset[j] == 1) doorPos[j] -= DOOR_SIZE[j];
+                else if (offset[j] > 0) doorPos[j] -= DOOR_SIZE[j] / 2;
 
-            this->doors.emplace_back(doorPos, doorSize, doorSprite);
+            this->doors.emplace_back(i, doorPos, doorSprite);
         }
     }
 }
@@ -57,10 +56,24 @@ float areaOverlap(const GameObject &a, const GameObject &b) {
     return prod;
 }
 
-bool GameRoom::doorAllowsObject(const GameObject &object) {
-    for (auto &door : doors) {
-        float intersectArea = areaOverlap(door, object);
-        if (intersectArea >= 0.45 * object.area()) return true;
-    }
+bool has_overlap(const GameObject &a, const GameObject &b) {
+    float intersectArea = areaOverlap(a, b);
+    return intersectArea >= 0.45 * b.area();
+}
+
+bool GameRoom::doorAllowsObject(const GameObject &object, int idx) {
+    for (auto &door : doors)
+        if ((idx == -1 or idx == door.idx) and has_overlap(door, object))
+            return true;
     return false;
+}
+
+glm::vec2 GameRoom::getDoorPosition(int idx) {
+    for (auto &door : doors) {
+        if (door.idx == idx) {
+            return door.Position;
+        }
+    }
+    assert(false);
+    return glm::vec2();
 }

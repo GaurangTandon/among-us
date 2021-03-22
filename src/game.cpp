@@ -46,6 +46,7 @@ void Game::Init() {
     // load textures
     ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "door");
     ResourceManager::LoadTexture(pathToTexture("mario_transparent.png"), true, "player");
+    ResourceManager::LoadTexture(pathToTexture("bowser_transparent.png"), true, "bowser");
 
     for (int i = 0; i < ROOM_TEX_COUNT; i++) {
         std::string name = "room" + std::to_string(i);
@@ -58,18 +59,25 @@ void Game::Init() {
         ResourceManager::LoadTexture(path_c, false, name);
     }
 
-    maze = new GameMaze(ROOM_TEX_COUNT, 10, 10);
+    maze = new GameMaze(ROOM_TEX_COUNT, 5, 5);
 
     {
         auto player_tex = ResourceManager::GetTexture("player");
         auto room_center = maze->base_room_center_position();
         auto player_pos = room_center - PLAYER_SIZE / 2.0f;
-        player = new Player(player_pos, player_tex);
+        auto player_room = maze->base_room_idx();
+        player = new Player(player_room, player_pos, player_tex);
     }
 }
 
-void Game::Update(double dt) {
+float getVelocty(double dt) {
+    return 250.0f * float(dt);
+}
 
+void Game::Update(double dt) {
+    auto velocity = getVelocty(dt);
+
+    maze->moveEnemy(player->currRoom, *player, velocity);
 }
 
 
@@ -77,7 +85,7 @@ void Game::ProcessInput(double dt) {
 #define pressed(x) (this->Keys[x])
 
     if (this->State == GAME_ACTIVE) {
-        float velocity = 250.0f * float(dt);
+        auto velocity = getVelocty(dt);
 
         std::map<unsigned int, glm::vec2> movers = {
                 {GLFW_KEY_W, glm::vec2(0.0f, -1.0f)},
@@ -92,12 +100,15 @@ void Game::ProcessInput(double dt) {
 
                 maze->moveAll(mazeDisplace);
 
-                if (maze->invalid_player_pos(*player))
-                    maze->moveAll(-mazeDisplace);
+                int roomBelongs = maze->find_player_room(*player);
+
+                if (roomBelongs == -1) maze->moveAll(-mazeDisplace);
+                else player->currRoom = roomBelongs;
 
                 return;
             }
         }
+
     }
 }
 
