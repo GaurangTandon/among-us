@@ -7,7 +7,6 @@
 #include "texture.h"
 #include "sprite_renderer.h"
 
-
 // Container object for holding all state relevant for a single
 // game object entity. Each object in the game likely needs the
 // minimal of state as described within GameObject.
@@ -28,7 +27,13 @@ public:
 
     // draw sprite
     virtual void Draw(SpriteRenderer &renderer);
+    float area() const;
 };
 
+// a contains b
+bool checkInside(const GameObject &a, const GameObject &b);
+
+// a and b are disjoint
+bool checkOutside(const GameObject &a, const GameObject &b);
 
 #endif //ASSIGNMENT_GAME_OBJECT_H

@@ -9,6 +9,7 @@
 #include "game_room.h"
 #include "resource_manager.h"
 
+
 // Do we want to store powerups etc. as part of rooms or inside maze only?
 class GameMaze {
     static constexpr int dx[4] = {-1, 1, 0, 0};
@@ -64,14 +65,10 @@ private:
             door_data[room_index(cx, cy)][rev_idx[idx]] = true;
         }
 
-        for (int i = 0; i < width * height; i++) {
-            std::cout << i << " " << door_data[i] << std::endl;
-        }
-
         return door_data;
     }
 
-    void generateRooms() {
+    void generateRooms(int texture_count) {
         int nodes = width * height;
         auto treeData = generateTree();
         rooms.reserve(nodes);
@@ -86,14 +83,14 @@ private:
             auto position = base + offset;
 
             // TODO: load different roomsprite based on position
-            auto roomSprite = ResourceManager::GetTexture("room" + std::to_string(room_idx % 3));
+            auto roomSprite = ResourceManager::GetTexture("room" + std::to_string(room_idx % texture_count));
             rooms.emplace_back(position, roomSprite, treeData[room_idx]);
         }
     }
 
 public:
-    GameMaze(int w = 3, int h = 3) : width(w), height(h) {
-        generateRooms();
+    GameMaze(int tex_count, int w = 3, int h = 3) : width(w), height(h) {
+        generateRooms(tex_count);
     }
 
     void Draw(SpriteRenderer &renderer) {
@@ -107,6 +104,21 @@ public:
         for (auto &room : rooms) {
             room.moveAll(displace);
         }
+    }
+
+    glm::vec2 base_room_center_position() {
+        return rooms[0].Position + rooms[0].Size / 2.0f;
+    }
+
+    bool invalid_player_pos(const GameObject &player) {
+        for (auto &room : rooms) {
+            if (checkInside(room, player)) return false;
+            if (checkOutside(room, player)) continue;
+
+            if (room.doorAllowsObject(player)) return false;
+        }
+
+        return true;
     }
 };
 

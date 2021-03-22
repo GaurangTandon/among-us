@@ -42,7 +42,25 @@ void GameRoom::DrawAddons(SpriteRenderer &renderer) {
 void GameRoom::moveAll(const glm::vec2 &displace) {
     Position += displace;
 
-    for (auto &door : doors) {
-        door.Position += displace;
+    for (auto &door : doors) door.Position += displace;
+}
+
+float areaOverlap(const GameObject &a, const GameObject &b) {
+    float prod = 1;
+
+    for (int i = 0; i < 2; i++) {
+        float x = std::fmax(a.Position[i], b.Position[i]);
+        float y = std::fmin(a.Position[i] + a.Size[i], b.Position[i] + b.Size[i]);
+        prod *= std::fmax(y - x, 0.0f);
     }
+
+    return prod;
+}
+
+bool GameRoom::doorAllowsObject(const GameObject &object) {
+    for (auto &door : doors) {
+        float intersectArea = areaOverlap(door, object);
+        if (intersectArea >= 0.45 * object.area()) return true;
+    }
+    return false;
 }

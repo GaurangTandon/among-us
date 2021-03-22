@@ -3,9 +3,11 @@
 #include "sprite_renderer.h"
 #include "resource_manager.h"
 #include "game_maze.h"
+#include "player.h"
 
 SpriteRenderer *Renderer;
 GameMaze *maze;
+Player *player;
 
 Game::Game(unsigned int width, unsigned int height)
         : State(GAME_ACTIVE), Keys(), Width(width), Height(height) {
@@ -19,9 +21,9 @@ Game::~Game() {
 #define pathToShader(filename) "assets/shaders/" filename
 #define pathToTexture(filename) "assets/textures/" filename
 
-inline bool exists_test3 (const std::string& name) {
+inline bool exists_test3(const std::string &name) {
     struct stat buffer;
-    return (stat (name.c_str(), &buffer) == 0);
+    return (stat(name.c_str(), &buffer) == 0);
 }
 
 void Game::Init() {
@@ -43,30 +45,39 @@ void Game::Init() {
 
     // load textures
     ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "door");
-    for (int i = 0; i < 3; i++) {
+    ResourceManager::LoadTexture(pathToTexture("mario.png"), false, "player");
+
+    for (int i = 0; i < ROOM_TEX_COUNT; i++) {
         std::string name = "room" + std::to_string(i);
         auto path = ("assets/textures/" + name + ".png");
 
-        char* path_c = (char*) malloc(sizeof(char) * (path.length() + 1));
+        char *path_c = (char *) malloc(sizeof(char) * (path.length() + 1));
         for (int j = 0; j < path.length(); j++) path_c[j] = path[j];
         path_c[path.length()] = 0;
 
         ResourceManager::LoadTexture(path_c, false, name);
     }
 
+    maze = new GameMaze(ROOM_TEX_COUNT);
 
-    maze = new GameMaze();
+    {
+        auto player_tex = ResourceManager::GetTexture("player");
+        auto room_center = maze->base_room_center_position();
+        auto player_pos = room_center - PLAYER_SIZE / 2.0f;
+        player = new Player(player_pos, player_tex);
+    }
 }
 
 void Game::Update(double dt) {
 
 }
 
+
 void Game::ProcessInput(double dt) {
 #define pressed(x) (this->Keys[x])
 
     if (this->State == GAME_ACTIVE) {
-        float velocity = 100.0f * float(dt);
+        float velocity = 250.0f * float(dt);
 
         std::map<unsigned int, glm::vec2> movers = {
                 {GLFW_KEY_W, glm::vec2(0.0f, -1.0f)},
@@ -77,16 +88,23 @@ void Game::ProcessInput(double dt) {
 
         for (auto &[key, displace]: movers) {
             if (pressed(key)) {
-                maze->moveAll(-displace * velocity);
+                auto mazeDisplace = -displace * velocity;
+
+                maze->moveAll(mazeDisplace);
+
+                if (maze->invalid_player_pos(*player))
+                    maze->moveAll(-mazeDisplace);
+
                 return;
             }
         }
     }
 }
 
+
 void Game::Render() {
-    if (this->State == GAME_ACTIVE) {
+    if (this->State == GAME_ACTIVE)
         maze->Draw(*Renderer);
-    }
+    player->Draw(*Renderer);
 }
 

@@ -1,7 +1,7 @@
 .idea/workspace.xml
 Assignment.cbp
 Assignment
-cmake-build-debug
+cmake-build-*
 main
 *.cmake
 CMakeCache.txt

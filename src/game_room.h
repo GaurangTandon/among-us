@@ -18,6 +18,7 @@ public:
     void Draw(SpriteRenderer &renderer) override;
     void DrawAddons(SpriteRenderer &renderer);
     void moveAll(const glm::vec2 &displace);
+    bool doorAllowsObject(const GameObject &object);
 };
 
 
