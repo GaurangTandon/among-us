@@ -131,17 +131,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Assignment
+# Target rules for targets named AmongUs
 
 # Build rule for target.
-Assignment: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Assignment
-.PHONY : Assignment
+AmongUs: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 AmongUs
+.PHONY : AmongUs
 
 # fast build rule for target.
-Assignment/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/build
-.PHONY : Assignment/fast
+AmongUs/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/build
+.PHONY : AmongUs/fast
 
 glad.o: glad.c.o
 
@@ -149,7 +149,7 @@ glad.o: glad.c.o
 
 # target to build an object file
 glad.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/glad.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/glad.c.o
 .PHONY : glad.c.o
 
 glad.i: glad.c.i
@@ -158,7 +158,7 @@ glad.i: glad.c.i
 
 # target to preprocess a source file
 glad.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/glad.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/glad.c.i
 .PHONY : glad.c.i
 
 glad.s: glad.c.s
@@ -167,7 +167,7 @@ glad.s: glad.c.s
 
 # target to generate assembly for a file
 glad.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/glad.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/glad.c.s
 .PHONY : glad.c.s
 
 src/game.o: src/game.cpp.o
@@ -176,7 +176,7 @@ src/game.o: src/game.cpp.o
 
 # target to build an object file
 src/game.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game.cpp.o
 .PHONY : src/game.cpp.o
 
 src/game.i: src/game.cpp.i
@@ -185,7 +185,7 @@ src/game.i: src/game.cpp.i
 
 # target to preprocess a source file
 src/game.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game.cpp.i
 .PHONY : src/game.cpp.i
 
 src/game.s: src/game.cpp.s
@@ -194,7 +194,7 @@ src/game.s: src/game.cpp.s
 
 # target to generate assembly for a file
 src/game.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game.cpp.s
 .PHONY : src/game.cpp.s
 
 src/game_maze.o: src/game_maze.cpp.o
@@ -203,7 +203,7 @@ src/game_maze.o: src/game_maze.cpp.o
 
 # target to build an object file
 src/game_maze.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_maze.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_maze.cpp.o
 .PHONY : src/game_maze.cpp.o
 
 src/game_maze.i: src/game_maze.cpp.i
@@ -212,7 +212,7 @@ src/game_maze.i: src/game_maze.cpp.i
 
 # target to preprocess a source file
 src/game_maze.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_maze.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_maze.cpp.i
 .PHONY : src/game_maze.cpp.i
 
 src/game_maze.s: src/game_maze.cpp.s
@@ -221,7 +221,7 @@ src/game_maze.s: src/game_maze.cpp.s
 
 # target to generate assembly for a file
 src/game_maze.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_maze.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_maze.cpp.s
 .PHONY : src/game_maze.cpp.s
 
 src/game_object.o: src/game_object.cpp.o
@@ -230,7 +230,7 @@ src/game_object.o: src/game_object.cpp.o
 
 # target to build an object file
 src/game_object.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_object.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_object.cpp.o
 .PHONY : src/game_object.cpp.o
 
 src/game_object.i: src/game_object.cpp.i
@@ -239,7 +239,7 @@ src/game_object.i: src/game_object.cpp.i
 
 # target to preprocess a source file
 src/game_object.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_object.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_object.cpp.i
 .PHONY : src/game_object.cpp.i
 
 src/game_object.s: src/game_object.cpp.s
@@ -248,7 +248,7 @@ src/game_object.s: src/game_object.cpp.s
 
 # target to generate assembly for a file
 src/game_object.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_object.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_object.cpp.s
 .PHONY : src/game_object.cpp.s
 
 src/game_room.o: src/game_room.cpp.o
@@ -257,7 +257,7 @@ src/game_room.o: src/game_room.cpp.o
 
 # target to build an object file
 src/game_room.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_room.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_room.cpp.o
 .PHONY : src/game_room.cpp.o
 
 src/game_room.i: src/game_room.cpp.i
@@ -266,7 +266,7 @@ src/game_room.i: src/game_room.cpp.i
 
 # target to preprocess a source file
 src/game_room.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_room.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_room.cpp.i
 .PHONY : src/game_room.cpp.i
 
 src/game_room.s: src/game_room.cpp.s
@@ -275,7 +275,7 @@ src/game_room.s: src/game_room.cpp.s
 
 # target to generate assembly for a file
 src/game_room.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/game_room.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/game_room.cpp.s
 .PHONY : src/game_room.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -284,7 +284,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -293,7 +293,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -302,7 +302,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 src/resource_manager.o: src/resource_manager.cpp.o
@@ -311,7 +311,7 @@ src/resource_manager.o: src/resource_manager.cpp.o
 
 # target to build an object file
 src/resource_manager.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/resource_manager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/resource_manager.cpp.o
 .PHONY : src/resource_manager.cpp.o
 
 src/resource_manager.i: src/resource_manager.cpp.i
@@ -320,7 +320,7 @@ src/resource_manager.i: src/resource_manager.cpp.i
 
 # target to preprocess a source file
 src/resource_manager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/resource_manager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/resource_manager.cpp.i
 .PHONY : src/resource_manager.cpp.i
 
 src/resource_manager.s: src/resource_manager.cpp.s
@@ -329,7 +329,7 @@ src/resource_manager.s: src/resource_manager.cpp.s
 
 # target to generate assembly for a file
 src/resource_manager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/resource_manager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/resource_manager.cpp.s
 .PHONY : src/resource_manager.cpp.s
 
 src/shader.o: src/shader.cpp.o
@@ -338,7 +338,7 @@ src/shader.o: src/shader.cpp.o
 
 # target to build an object file
 src/shader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/shader.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/shader.cpp.o
 .PHONY : src/shader.cpp.o
 
 src/shader.i: src/shader.cpp.i
@@ -347,7 +347,7 @@ src/shader.i: src/shader.cpp.i
 
 # target to preprocess a source file
 src/shader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/shader.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/shader.cpp.i
 .PHONY : src/shader.cpp.i
 
 src/shader.s: src/shader.cpp.s
@@ -356,7 +356,7 @@ src/shader.s: src/shader.cpp.s
 
 # target to generate assembly for a file
 src/shader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/shader.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/shader.cpp.s
 .PHONY : src/shader.cpp.s
 
 src/sprite_renderer.o: src/sprite_renderer.cpp.o
@@ -365,7 +365,7 @@ src/sprite_renderer.o: src/sprite_renderer.cpp.o
 
 # target to build an object file
 src/sprite_renderer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/sprite_renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/sprite_renderer.cpp.o
 .PHONY : src/sprite_renderer.cpp.o
 
 src/sprite_renderer.i: src/sprite_renderer.cpp.i
@@ -374,7 +374,7 @@ src/sprite_renderer.i: src/sprite_renderer.cpp.i
 
 # target to preprocess a source file
 src/sprite_renderer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/sprite_renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/sprite_renderer.cpp.i
 .PHONY : src/sprite_renderer.cpp.i
 
 src/sprite_renderer.s: src/sprite_renderer.cpp.s
@@ -383,7 +383,7 @@ src/sprite_renderer.s: src/sprite_renderer.cpp.s
 
 # target to generate assembly for a file
 src/sprite_renderer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/sprite_renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/sprite_renderer.cpp.s
 .PHONY : src/sprite_renderer.cpp.s
 
 src/stb_image.o: src/stb_image.cpp.o
@@ -392,7 +392,7 @@ src/stb_image.o: src/stb_image.cpp.o
 
 # target to build an object file
 src/stb_image.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/stb_image.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/stb_image.cpp.o
 .PHONY : src/stb_image.cpp.o
 
 src/stb_image.i: src/stb_image.cpp.i
@@ -401,7 +401,7 @@ src/stb_image.i: src/stb_image.cpp.i
 
 # target to preprocess a source file
 src/stb_image.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/stb_image.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/stb_image.cpp.i
 .PHONY : src/stb_image.cpp.i
 
 src/stb_image.s: src/stb_image.cpp.s
@@ -410,7 +410,7 @@ src/stb_image.s: src/stb_image.cpp.s
 
 # target to generate assembly for a file
 src/stb_image.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/stb_image.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/stb_image.cpp.s
 .PHONY : src/stb_image.cpp.s
 
 src/texture.o: src/texture.cpp.o
@@ -419,7 +419,7 @@ src/texture.o: src/texture.cpp.o
 
 # target to build an object file
 src/texture.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/texture.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/texture.cpp.o
 .PHONY : src/texture.cpp.o
 
 src/texture.i: src/texture.cpp.i
@@ -428,7 +428,7 @@ src/texture.i: src/texture.cpp.i
 
 # target to preprocess a source file
 src/texture.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/texture.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/texture.cpp.i
 .PHONY : src/texture.cpp.i
 
 src/texture.s: src/texture.cpp.s
@@ -437,7 +437,7 @@ src/texture.s: src/texture.cpp.s
 
 # target to generate assembly for a file
 src/texture.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Assignment.dir/build.make CMakeFiles/Assignment.dir/src/texture.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AmongUs.dir/build.make CMakeFiles/AmongUs.dir/src/texture.cpp.s
 .PHONY : src/texture.cpp.s
 
 # Help Target
@@ -448,7 +448,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Assignment"
+	@echo "... AmongUs"
 	@echo "... glad.o"
 	@echo "... glad.i"
 	@echo "... glad.s"

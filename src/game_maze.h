@@ -4,21 +4,26 @@
 #include <stack>
 #include <vector>
 #include <utility>
+#include <iostream>
 #include <bitset>
 #include "game_room.h"
 #include "resource_manager.h"
 
 // Do we want to store powerups etc. as part of rooms or inside maze only?
 class GameMaze {
+    static constexpr int dx[4] = {-1, 1, 0, 0};
+    static constexpr int dy[4] = {0, 0, -1, 1};
+    static constexpr int rev_idx[4] = {1, 0, 3, 2};
+
 private:
     std::vector<GameRoom> rooms;
     int width, height;
 
-    std::vector<std::bitset<4>> generateTree(int seed = 0) {
+    [[nodiscard]] std::vector<std::bitset<4>> generateTree(int seed = 0) const {
+#define room_index(x, y) (x * width + y)
+
         srand(seed);
         using PII = std::pair<int, int>;
-        int dx[4] = {-1, 1, 0, 0};
-        int dy[4] = {0, 0, -1, 1};
 
         std::vector<std::vector<bool>> visited(width, std::vector<bool>(height, false));
         std::stack<PII> st;
@@ -36,7 +41,7 @@ private:
             auto &[nx, ny] = st.top();
             st.pop();
 
-            int node_idx = ny * width + nx;
+            int node_idx = room_index(nx, ny);
             std::vector<std::pair<int, PII>> neighbours;
 
             for (int i = 0; i < 4; i++) {
@@ -56,6 +61,11 @@ private:
             st.push({cx, cy});
 
             door_data[node_idx][idx] = true;
+            door_data[room_index(cx, cy)][rev_idx[idx]] = true;
+        }
+
+        for (int i = 0; i < width * height; i++) {
+            std::cout << i << " " << door_data[i] << std::endl;
         }
 
         return door_data;
@@ -66,16 +76,17 @@ private:
         auto treeData = generateTree();
         rooms.reserve(nodes);
 
-        auto base = glm::vec2(0.0f, 0.0f);
+        auto base = glm::vec2(100.0f, 100.0f);
 
         for (int room_idx = 0; room_idx < nodes; room_idx++) {
-            float row = room_idx / width, col = room_idx % width;
+            int row = room_idx / width, col = room_idx % width;
 
-            glm::vec2 offset(col * GameRoom::SIZE[0], row * GameRoom::SIZE[1]);
+            glm::vec2 offset(float(col) * GameRoom::SIZE[0], float(row) * GameRoom::SIZE[1]);
 
             auto position = base + offset;
 
-            auto roomSprite = ResourceManager::GetTexture("room");
+            // TODO: load different roomsprite based on position
+            auto roomSprite = ResourceManager::GetTexture("room" + std::to_string(room_idx % 3));
             rooms.emplace_back(position, roomSprite, treeData[room_idx]);
         }
     }
