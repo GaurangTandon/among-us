@@ -162,18 +162,13 @@ public:
             std::vector<int> indices = {0, 1};
             if (rand() % 2) indices = {1, 0};
 
-            bool moved = false;
             for (const auto &i : indices) {
                 auto diff = std::abs(currPos[i] - targetPos[i]);
                 if (diff < 3) continue;
 
-                moved = true;
                 float sign = currPos[i] > targetPos[i] ? -1 : 1;
                 currPos[i] += velocity * sign;
                 break;
-            }
-            if (not moved) {
-                std::cout << "Nope" << std::endl;
             }
         };
 
@@ -198,16 +193,11 @@ public:
             auto currDoorAllows = currRoomObj.doorAllowsObject(enemy, currDoorIndex);
             auto nextDoorAllows = nextRoomObj.doorAllowsObject(enemy, nextDoorIndex);
 
-            std::cout << currDoorIndex << std::endl;
-
             if (not currDoorAllows) {
                 if (nextDoorAllows) {
                     enemy.currRoom = nextRoom;
                 } else {
-                    auto oldPosition = enemy.Position;
                     move_towards_target(enemy, currDoorPosition);
-                    auto newPosition = enemy.Position;
-//                    assert(oldPosition != newPosition);
                     continue;
                 }
             }
@@ -218,9 +208,9 @@ public:
     }
 
     void moveAll(const glm::vec2 &displace) {
-        for (auto &room : rooms) {
-            room.moveAll(displace);
-        }
+        for (auto &room : rooms) room.moveAll(displace);
+
+        for (auto &enemy : enemies) enemy.Position += displace;
     }
 
     int base_room_idx() {

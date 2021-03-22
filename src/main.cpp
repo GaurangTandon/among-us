@@ -39,8 +39,8 @@ void renderLoop(GLFWwindow *window) {
         lastFrame = currentFrame;
         glfwPollEvents();
 
-        amongUs.ProcessInput(deltaTime);
         amongUs.Update(deltaTime);
+        amongUs.ProcessInput(deltaTime);
 
         glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);

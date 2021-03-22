@@ -37,7 +37,6 @@ void GameRoom::DrawAddons(SpriteRenderer &renderer) {
     for (auto &door : doors) door.Draw(renderer);
 }
 
-
 void GameRoom::moveAll(const glm::vec2 &displace) {
     Position += displace;
 
@@ -58,7 +57,7 @@ float areaOverlap(const GameObject &a, const GameObject &b) {
 
 bool has_overlap(const GameObject &a, const GameObject &b) {
     float intersectArea = areaOverlap(a, b);
-    return intersectArea >= 0.45 * b.area();
+    return intersectArea >= 0.35 * b.area();
 }
 
 bool GameRoom::doorAllowsObject(const GameObject &object, int idx) {

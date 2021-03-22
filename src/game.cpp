@@ -71,13 +71,14 @@ void Game::Init() {
 }
 
 float getVelocty(double dt) {
-    return 250.0f * float(dt);
+    return 400.0f * float(dt);
 }
 
 void Game::Update(double dt) {
     auto velocity = getVelocty(dt);
+    auto enemyVelocity = velocity / 2;
 
-    maze->moveEnemy(player->currRoom, *player, velocity);
+    maze->moveEnemy(player->currRoom, *player, enemyVelocity);
 }
 
 
