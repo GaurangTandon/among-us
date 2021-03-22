@@ -6,6 +6,7 @@
 #include <utility>
 #include <iostream>
 #include <bitset>
+#include "game_const.h"
 #include "game_room.h"
 #include "resource_manager.h"
 
@@ -20,17 +21,18 @@ private:
     std::vector<GameRoom> rooms;
     int width, height;
 
-    [[nodiscard]] std::vector<std::bitset<4>> generateTree(int seed = 0) const {
-#define room_index(x, y) (x * width + y)
+    [[nodiscard]] int room_index(int x, int y) const { return x * width + y; }
 
+    std::vector<std::bitset<4>> generateTree(int seed = 0) {
         srand(seed);
         using PII = std::pair<int, int>;
 
         std::vector<std::vector<bool>> visited(width, std::vector<bool>(height, false));
         std::stack<PII> st;
 
-        visited[0][0] = true;
-        st.push({0, 0});
+        auto[start_x, start_y] = base_room_coordinate();
+        visited[start_x][start_y] = true;
+        st.push({start_x, start_y});
 
         auto valid = [&](int x, int y) {
             return x >= 0 and x < width and y >= 0 and y < height and not visited[x][y];
@@ -68,21 +70,27 @@ private:
         return door_data;
     }
 
+    std::pair<int, int> base_room_coordinate() {
+        return {width / 2, height / 2};
+    }
+
     void generateRooms(int texture_count) {
         int nodes = width * height;
         auto treeData = generateTree();
         rooms.reserve(nodes);
 
-        auto base = glm::vec2(100.0f, 100.0f);
+        glm::vec2 first_room_pos;
+        auto[cx, cy] = base_room_coordinate();
+        first_room_pos[0] = SCREEN_WIDTH / 2 - cx * GameRoom::SIZE[0];
+        first_room_pos[1] = SCREEN_HEIGHT / 2 - cy * GameRoom::SIZE[1];
 
         for (int room_idx = 0; room_idx < nodes; room_idx++) {
             int row = room_idx / width, col = room_idx % width;
 
             glm::vec2 offset(float(col) * GameRoom::SIZE[0], float(row) * GameRoom::SIZE[1]);
 
-            auto position = base + offset;
+            auto position = first_room_pos + offset;
 
-            // TODO: load different roomsprite based on position
             auto roomSprite = ResourceManager::GetTexture("room" + std::to_string(room_idx % texture_count));
             rooms.emplace_back(position, roomSprite, treeData[room_idx]);
         }
@@ -107,7 +115,9 @@ public:
     }
 
     glm::vec2 base_room_center_position() {
-        return rooms[0].Position + rooms[0].Size / 2.0f;
+        auto[cx, cy] = base_room_coordinate();
+        int idx = room_index(cx, cy);
+        return rooms[idx].Position + rooms[idx].Size / 2.0f;
     }
 
     bool invalid_player_pos(const GameObject &player) {

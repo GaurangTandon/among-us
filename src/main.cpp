@@ -3,11 +3,9 @@
 
 #include "game.h"
 #include "resource_manager.h"
+#include "game_const.h"
 
 #include <iostream>
-
-const unsigned int SCREEN_WIDTH = 1280;
-const unsigned int SCREEN_HEIGHT = 720;
 
 Game amongUs(SCREEN_WIDTH, SCREEN_HEIGHT);
 

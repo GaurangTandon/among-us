@@ -45,7 +45,7 @@ void Game::Init() {
 
     // load textures
     ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "door");
-    ResourceManager::LoadTexture(pathToTexture("mario.png"), false, "player");
+    ResourceManager::LoadTexture(pathToTexture("mario_transparent.png"), true, "player");
 
     for (int i = 0; i < ROOM_TEX_COUNT; i++) {
         std::string name = "room" + std::to_string(i);
@@ -58,7 +58,7 @@ void Game::Init() {
         ResourceManager::LoadTexture(path_c, false, name);
     }
 
-    maze = new GameMaze(ROOM_TEX_COUNT);
+    maze = new GameMaze(ROOM_TEX_COUNT, 10, 10);
 
     {
         auto player_tex = ResourceManager::GetTexture("player");
