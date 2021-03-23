@@ -4,10 +4,12 @@
 #include "resource_manager.h"
 #include "game_maze.h"
 #include "player.h"
+#include "text_renderer.h"
 
 SpriteRenderer *Renderer;
 GameMaze *maze;
 Player *player;
+TextRenderer *Text;
 
 Game::Game(unsigned int width, unsigned int height)
         : State(GAME_ACTIVE), Keys(), Width(width), Height(height) {
@@ -20,6 +22,7 @@ Game::~Game() {
 
 #define pathToShader(filename) "assets/shaders/" filename
 #define pathToTexture(filename) "assets/textures/" filename
+#define pathToFont(filename) "assets/fonts/" filename
 
 inline bool exists_test3(const std::string &name) {
     struct stat buffer;
@@ -27,6 +30,9 @@ inline bool exists_test3(const std::string &name) {
 }
 
 void Game::Init() {
+    Text = new TextRenderer(this->Width, this->Height);
+    Text->Load(pathToFont("ocraext.TTF"), 24);
+
     ResourceManager::LoadShader(pathToShader("sprite.vs"), pathToShader("sprite.fs"), nullptr, "sprite");
     ResourceManager::LoadShader(pathToShader("particle.vs"), pathToShader("particle.fs"), nullptr, "particle");
     ResourceManager::LoadShader(pathToShader("post_processing.vs"), pathToShader("post_processing.fs"), nullptr,
@@ -118,5 +124,7 @@ void Game::Render() {
     if (this->State == GAME_ACTIVE)
         maze->Draw(*Renderer);
     player->Draw(*Renderer);
+
+    Text->RenderText("Lives:", 5.0f, 5.0f, 1.0f);
 }
 
