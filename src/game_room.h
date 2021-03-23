@@ -20,6 +20,7 @@ public:
 class GameRoom : public GameObject {
 private:
     std::vector<RoomDoor> doors;
+    std::vector<GameObject> staticObjects;
 
 public:
     constexpr static glm::vec2 SIZE = glm::vec2(200.0f, 200.0f);

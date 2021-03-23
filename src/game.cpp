@@ -48,6 +48,8 @@ void Game::Init() {
     ResourceManager::LoadTexture(pathToTexture("mario_transparent.png"), true, "player");
     ResourceManager::LoadTexture(pathToTexture("bowser_transparent.png"), true, "bowser");
 
+    ResourceManager::LoadTexture(pathToTexture("black-square.png"), false, "wall");
+
     for (int i = 0; i < ROOM_TEX_COUNT; i++) {
         std::string name = "room" + std::to_string(i);
         auto path = ("assets/textures/" + name + ".png");
@@ -59,7 +61,7 @@ void Game::Init() {
         ResourceManager::LoadTexture(path_c, false, name);
     }
 
-    maze = new GameMaze(ROOM_TEX_COUNT, 5, 5);
+    maze = new GameMaze(ROOM_TEX_COUNT, 10, 10);
 
     {
         auto player_tex = ResourceManager::GetTexture("player");
@@ -80,7 +82,6 @@ void Game::Update(double dt) {
 
     maze->moveEnemy(player->currRoom, *player, enemyVelocity);
 }
-
 
 void Game::ProcessInput(double dt) {
 #define pressed(x) (this->Keys[x])
@@ -109,7 +110,6 @@ void Game::ProcessInput(double dt) {
                 return;
             }
         }
-
     }
 }
 

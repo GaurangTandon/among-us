@@ -12,19 +12,33 @@ GameRoom::GameRoom(glm::vec2 pos, Texture2D sprite, std::bitset<4> doors, glm::v
             glm::vec2(0, 0.5),
             glm::vec2(1, 0.5)
     };
+    std::vector<glm::vec2> wallOffset = {
+            glm::vec2(0.0f, 0.0f),
+            glm::vec2(0, 0.98f),
+            glm::vec2(0, 0),
+            glm::vec2(0.99f, 0)
+    };
+    const glm::vec2 HORIZONTAL_WALL_SIZE(5.0f, GameRoom::SIZE[1]);
+    const glm::vec2 VERTICAL_WALL_SIZE(GameRoom::SIZE[0], 5.0f);
 
     auto doorSprite = ResourceManager::GetTexture("door");
+    auto wallSprite = ResourceManager::GetTexture("wall");
 
     for (int i = 0; i < 4; i++) {
         if (doors[i]) {
             auto &offset = door_offsets[i];
-            auto doorPos = pos + glm::vec2(offset[0] * size[0], offset[1] * size[1]);
+            // https://stackoverflow.com/questions/13901119
+            auto doorPos = pos + offset * size;
 
             for (int j = 0; j < 2; j++)
                 if (offset[j] == 1) doorPos[j] -= DOOR_SIZE[j];
                 else if (offset[j] > 0) doorPos[j] -= DOOR_SIZE[j] / 2;
 
             this->doors.emplace_back(i, doorPos, doorSprite);
+        } else {
+            auto wallPos = pos + wallOffset[i] * size;
+            const auto &wallSize = i > 1 ? HORIZONTAL_WALL_SIZE : VERTICAL_WALL_SIZE;
+            this->staticObjects.emplace_back(wallPos, wallSize, wallSprite);
         }
     }
 }
@@ -35,12 +49,14 @@ void GameRoom::Draw(SpriteRenderer &renderer) {
 
 void GameRoom::DrawAddons(SpriteRenderer &renderer) {
     for (auto &door : doors) door.Draw(renderer);
+    for (auto &object : staticObjects) object.Draw(renderer);
 }
 
 void GameRoom::moveAll(const glm::vec2 &displace) {
     Position += displace;
 
     for (auto &door : doors) door.Position += displace;
+    for (auto &object : staticObjects) object.Position += displace;
 }
 
 float areaOverlap(const GameObject &a, const GameObject &b) {
@@ -74,5 +90,4 @@ glm::vec2 GameRoom::getDoorPosition(int idx) {
         }
     }
     assert(false);
-    return glm::vec2();
 }
