@@ -13,7 +13,7 @@ Player *player;
 TextRenderer *Text;
 
 Game::Game(unsigned int width, unsigned int height)
-        : State(GAME_ACTIVE), Keys(), Width(width), Height(height) {
+        : State(GAME_MENU), Keys(), Width(width), Height(height) {
 
 }
 
@@ -77,7 +77,11 @@ void Game::Init() {
         ResourceManager::LoadTexture(path_c, false, name);
     }
 
-    Reset();
+    // TODO: delete when finished
+    {
+        State = GAME_ACTIVE;
+        Reset();
+    }
 }
 
 float getVelocty(double dt) {
@@ -85,10 +89,16 @@ float getVelocty(double dt) {
 }
 
 void Game::Update(double dt) {
-    auto velocity = getVelocty(dt);
-    auto enemyVelocity = velocity / 2;
+    if (State == GAME_ACTIVE) {
+        auto velocity = getVelocty(dt);
+        auto enemyVelocity = velocity / 2;
 
-    maze->moveEnemy(player->currRoom, *player, enemyVelocity);
+        maze->moveEnemy(player->currRoom, *player, enemyVelocity);
+    }
+
+    if (getTimeRemaining() == 0) {
+        State = GAME_LOSE;
+    }
 }
 
 void Game::ProcessInput(double dt) {
@@ -118,28 +128,52 @@ void Game::ProcessInput(double dt) {
                 return;
             }
         }
+    } else {
+        if (pressed(GLFW_KEY_SPACE)) {
+            Reset();
+            this->State = GAME_ACTIVE;
+        }
     }
 }
 
 
 void Game::Render() {
-    if (this->State == GAME_ACTIVE) {
+    auto renderActiveGame = [&]() {
         maze->Draw(*Renderer);
         player->Draw(*Renderer);
-    }
 
-    std::vector<std::string> textsToRender = {
-            "Health: ",
-            "Tasks: ",
-            "Light: ",
-            "Time remaining: " + std::to_string(getTimeRemaining())
+        std::vector<std::string> textsToRender = {
+                "Health: ",
+                "Tasks: ",
+                "Light: ",
+                "Time remaining: " + std::to_string(getTimeRemaining())
+        };
+
+        float yOffset = 5.0f;
+
+        for (auto &str : textsToRender) {
+            Text->RenderText(str, 5.0f, yOffset, 1.0f, glm::vec3(1.0f, 0.4f, 1.0f));
+            yOffset += 20;
+        }
     };
 
-    float yOffset = 5.0f;
+    auto renderMenu = [&]() {
 
-    for (auto &str : textsToRender) {
-        Text->RenderText(str, 5.0f, yOffset, 1.0f, glm::vec3(1.0f, 0.4f, 1.0f));
-        yOffset += 20;
+    };
+
+    switch (this->State) {
+        case GAME_ACTIVE:
+            renderActiveGame();
+            break;
+        case GAME_MENU:
+            renderMenu();
+            break;
+        case GAME_WIN:
+//            renderWinner();
+            break;
+        case GAME_LOSE:
+//            renderLose();
+            break;
     }
 }
 
