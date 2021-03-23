@@ -225,13 +225,18 @@ public:
 
     int find_player_room(const GameObject &player) {
         int idx = -1;
+
         for (auto &room : rooms) {
             idx++;
 
-            if (checkInside(room, player)) return idx;
-            if (checkOutside(room, player)) continue;
+            float area_overlap = room.areaOverlap(player);
+            float threshold = 0.45f * player.area();
 
-            if (room.doorAllowsObject(player)) return idx;
+            if (area_overlap < threshold) continue;
+
+            if (room.wallOverlaps(player)) return -1;
+
+            return idx;
         }
 
         return -1;

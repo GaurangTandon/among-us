@@ -27,13 +27,10 @@ public:
 
     // draw sprite
     virtual void Draw(SpriteRenderer &renderer);
+
     float area() const;
+
+    float areaOverlap(const GameObject &b) const;
 };
-
-// a contains b
-bool checkInside(const GameObject &a, const GameObject &b);
-
-// a and b are disjoint
-bool checkOutside(const GameObject &a, const GameObject &b);
 
 #endif //ASSIGNMENT_GAME_OBJECT_H

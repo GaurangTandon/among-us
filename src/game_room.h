@@ -20,6 +20,7 @@ public:
 class GameRoom : public GameObject {
 private:
     std::vector<RoomDoor> doors;
+    std::vector<GameObject> walls;
     std::vector<GameObject> staticObjects;
 
 public:
@@ -37,6 +38,8 @@ public:
     bool doorAllowsObject(const GameObject &object, int idx = -1);
 
     glm::vec2 getDoorPosition(int idx);
+
+    bool wallOverlaps(const GameObject &object);
 };
 
 

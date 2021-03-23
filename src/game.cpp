@@ -44,7 +44,7 @@ void Game::Init() {
     Renderer = new SpriteRenderer(x);
 
     // load textures
-    ResourceManager::LoadTexture(pathToTexture("awesomeface.png"), true, "door");
+    ResourceManager::LoadTexture(pathToTexture("transparent.png"), true, "door");
     ResourceManager::LoadTexture(pathToTexture("mario_transparent.png"), true, "player");
     ResourceManager::LoadTexture(pathToTexture("bowser_transparent.png"), true, "bowser");
 

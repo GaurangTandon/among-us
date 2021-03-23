@@ -38,7 +38,7 @@ GameRoom::GameRoom(glm::vec2 pos, Texture2D sprite, std::bitset<4> doors, glm::v
         } else {
             auto wallPos = pos + wallOffset[i] * size;
             const auto &wallSize = i > 1 ? HORIZONTAL_WALL_SIZE : VERTICAL_WALL_SIZE;
-            this->staticObjects.emplace_back(wallPos, wallSize, wallSprite);
+            this->walls.emplace_back(wallPos, wallSize, wallSprite);
         }
     }
 }
@@ -49,6 +49,7 @@ void GameRoom::Draw(SpriteRenderer &renderer) {
 
 void GameRoom::DrawAddons(SpriteRenderer &renderer) {
     for (auto &door : doors) door.Draw(renderer);
+    for (auto &wall : walls) wall.Draw(renderer);
     for (auto &object : staticObjects) object.Draw(renderer);
 }
 
@@ -56,23 +57,13 @@ void GameRoom::moveAll(const glm::vec2 &displace) {
     Position += displace;
 
     for (auto &door : doors) door.Position += displace;
+    for (auto &wall : walls) wall.Position += displace;
     for (auto &object : staticObjects) object.Position += displace;
 }
 
-float areaOverlap(const GameObject &a, const GameObject &b) {
-    float prod = 1;
-
-    for (int i = 0; i < 2; i++) {
-        float x = std::fmax(a.Position[i], b.Position[i]);
-        float y = std::fmin(a.Position[i] + a.Size[i], b.Position[i] + b.Size[i]);
-        prod *= std::fmax(y - x, 0.0f);
-    }
-
-    return prod;
-}
 
 bool has_overlap(const GameObject &a, const GameObject &b) {
-    float intersectArea = areaOverlap(a, b);
+    float intersectArea = a.areaOverlap(b);
     return intersectArea >= 0.35 * b.area();
 }
 
@@ -80,6 +71,16 @@ bool GameRoom::doorAllowsObject(const GameObject &object, int idx) {
     for (auto &door : doors)
         if ((idx == -1 or idx == door.idx) and has_overlap(door, object))
             return true;
+    return false;
+}
+
+bool GameRoom::wallOverlaps(const GameObject &object) {
+    const float EPS = 1e-6;
+
+    for (auto &wall : walls)
+        if (wall.areaOverlap(object) > EPS)
+            return true;
+
     return false;
 }
 
