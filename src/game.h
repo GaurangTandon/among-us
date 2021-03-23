@@ -14,10 +14,12 @@ enum GameState {
 class Game {
 public:
     static constexpr int ROOM_TEX_COUNT = 4;
+    static constexpr int DURATION = 50;
     // game state
     GameState State;
     bool Keys[1024];
     unsigned int Width, Height;
+    double endTime;
 
     // constructor/destructor
     Game(unsigned int width, unsigned int height);
@@ -33,6 +35,10 @@ public:
     void Update(double dt);
 
     void Render();
+
+    void Reset();
+
+    int getTimeRemaining();
 };
 
 

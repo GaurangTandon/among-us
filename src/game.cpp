@@ -1,4 +1,5 @@
 #include <sys/stat.h>
+#include <z3.h>
 #include "game.h"
 #include "sprite_renderer.h"
 #include "resource_manager.h"
@@ -24,9 +25,18 @@ Game::~Game() {
 #define pathToTexture(filename) "assets/textures/" filename
 #define pathToFont(filename) "assets/fonts/" filename
 
-inline bool exists_test3(const std::string &name) {
-    struct stat buffer;
-    return (stat(name.c_str(), &buffer) == 0);
+void Game::Reset() {
+    maze = new GameMaze(ROOM_TEX_COUNT, 10, 10);
+
+    {
+        auto player_tex = ResourceManager::GetTexture("player");
+        auto room_center = maze->base_room_center_position();
+        auto player_pos = room_center - PLAYER_SIZE / 2.0f;
+        auto player_room = maze->base_room_idx();
+        player = new Player(player_room, player_pos, player_tex);
+    }
+
+    endTime = glfwGetTime() + DURATION;
 }
 
 void Game::Init() {
@@ -67,15 +77,7 @@ void Game::Init() {
         ResourceManager::LoadTexture(path_c, false, name);
     }
 
-    maze = new GameMaze(ROOM_TEX_COUNT, 10, 10);
-
-    {
-        auto player_tex = ResourceManager::GetTexture("player");
-        auto room_center = maze->base_room_center_position();
-        auto player_pos = room_center - PLAYER_SIZE / 2.0f;
-        auto player_room = maze->base_room_idx();
-        player = new Player(player_room, player_pos, player_tex);
-    }
+    Reset();
 }
 
 float getVelocty(double dt) {
@@ -121,10 +123,27 @@ void Game::ProcessInput(double dt) {
 
 
 void Game::Render() {
-    if (this->State == GAME_ACTIVE)
+    if (this->State == GAME_ACTIVE) {
         maze->Draw(*Renderer);
-    player->Draw(*Renderer);
+        player->Draw(*Renderer);
+    }
 
-    Text->RenderText("Lives:", 5.0f, 5.0f, 1.0f);
+    std::vector<std::string> textsToRender = {
+            "Health: ",
+            "Tasks: ",
+            "Light: ",
+            "Time remaining: " + std::to_string(getTimeRemaining())
+    };
+
+    float yOffset = 5.0f;
+
+    for (auto &str : textsToRender) {
+        Text->RenderText(str, 5.0f, yOffset, 1.0f, glm::vec3(1.0f, 0.4f, 1.0f));
+        yOffset += 20;
+    }
+}
+
+int Game::getTimeRemaining() {
+    return int(std::max(0.0, endTime - glfwGetTime()));
 }
 
