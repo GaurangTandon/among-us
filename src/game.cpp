@@ -5,8 +5,8 @@
 #include "player.h"
 #include "text_renderer.h"
 
-constexpr int MAZE_WIDTH = 5;
-constexpr int MAZE_HEIGHT = 5;
+constexpr int MAZE_WIDTH = 3;
+constexpr int MAZE_HEIGHT = 3;
 
 SpriteRenderer *Renderer;
 GameMaze *maze;
@@ -86,10 +86,10 @@ void Game::Init() {
     }
 
     // TODO: delete when finished
-    {
-        State = GAME_ACTIVE;
-        Reset();
-    }
+//    {
+//        State = GAME_ACTIVE;
+//        Reset();
+//    }
 }
 
 float getVelocty(double dt) {
@@ -124,13 +124,14 @@ void Game::Update(double currentTime, double dt) {
                 }
             }
         }
+
+        auto lost = getTimeRemaining() == 0 or player->isDead();
+
+        if (lost) {
+            State = GAME_LOSE;
+        }
     }
 
-    auto lost = getTimeRemaining() == 0 or player->isDead();
-
-    if (lost) {
-        State = GAME_LOSE;
-    }
 }
 
 void Game::ProcessInput(double dt) {
@@ -170,6 +171,8 @@ void Game::ProcessInput(double dt) {
 
 
 void Game::Render() {
+    auto CHAR_HEIGHT = 20;
+
     auto renderActiveGame = [&]() {
         maze->Draw(*Renderer);
         player->Draw(*Renderer);
@@ -177,24 +180,33 @@ void Game::Render() {
         std::vector<std::string> textsToRender = {
                 "Health: " + std::to_string(player->getHealth()),
                 "Tasks: " + std::to_string(tasksComplete) + " / " + std::to_string(TOTAL_TASKS),
-                "Light: ",
+                "Light: On",
                 "Time remaining: " + std::to_string(getTimeRemaining()),
-
         };
+
         if (enemyCleared) textsToRender.emplace_back("Enemies cleared");
         if (powerupsReleased) textsToRender.emplace_back("Powerups released");
-
 
         float yOffset = 5.0f;
 
         for (auto &str : textsToRender) {
             Text->RenderText(str, 5.0f, yOffset, 1.0f, glm::vec3(1.0f, 0.4f, 1.0f));
-            yOffset += 20;
+            yOffset += CHAR_HEIGHT;
         }
     };
 
     auto renderMenu = [&]() {
+        std::vector<std::string> textsToRender = {
+                "Welcome to AmongUs!",
+                "Press Space to start"
+        };
 
+        float yOffset = 200.0f;
+
+        for (auto &str : textsToRender) {
+            Text->RenderText(str, 350.0f, yOffset, 2.0f, glm::vec3(1.0f, 0.4f, 1.0f));
+            yOffset += 2 * CHAR_HEIGHT;
+        }
     };
 
     switch (this->State) {
