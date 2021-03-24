@@ -1,5 +1,7 @@
+#include <iostream>
 #include "game_room.h"
 #include "resource_manager.h"
+#include "task.h"
 
 GameRoom::GameRoom(glm::vec2 pos, Texture2D sprite, std::bitset<4> doors, glm::vec2 size, glm::vec3 color) : GameObject(
         pos,
@@ -50,7 +52,7 @@ void GameRoom::Draw(SpriteRenderer &renderer) {
 void GameRoom::DrawAddons(SpriteRenderer &renderer) {
     for (auto &door : doors) door.Draw(renderer);
     for (auto &wall : walls) wall.Draw(renderer);
-    for (auto &object : staticObjects) object.Draw(renderer);
+    for (auto &task : tasks) task.Draw(renderer);
 }
 
 void GameRoom::moveAll(const glm::vec2 &displace) {
@@ -58,7 +60,7 @@ void GameRoom::moveAll(const glm::vec2 &displace) {
 
     for (auto &door : doors) door.Position += displace;
     for (auto &wall : walls) wall.Position += displace;
-    for (auto &object : staticObjects) object.Position += displace;
+    for (auto &object : tasks) object.Position += displace;
 }
 
 
@@ -75,20 +77,41 @@ bool GameRoom::doorAllowsObject(const GameObject &object, int idx) {
 }
 
 bool GameRoom::wallOverlaps(const GameObject &object) {
-    const float EPS = 1e-6;
-
     for (auto &wall : walls)
-        if (wall.areaOverlap(object) > EPS)
+        if (wall.hasOverlap(object))
             return true;
 
     return false;
 }
 
 glm::vec2 GameRoom::getDoorPosition(int idx) {
-    for (auto &door : doors) {
-        if (door.idx == idx) {
+    for (auto &door : doors)
+        if (door.idx == idx)
             return door.Position;
-        }
-    }
+
     assert(false);
+}
+
+int GameRoom::overlapsTask(const GameObject &object) {
+    for (auto &task : tasks)
+        if (task.hasOverlap(object)) return task.type;
+    return 0;
+}
+
+bool GameRoom::addTask(const glm::vec2 &position, int type) {
+    const auto &taskTex = ResourceManager::GetTexture((type == 1) ? "wall" : "wall2");
+
+    auto task = Task(position, taskTex, type);
+    tasks.push_back(task);
+
+    return true;
+}
+
+glm::vec2 GameRoom::getCenterCoordinate() {
+    return Position + Size / 2.0f;
+}
+
+void GameRoom::removeTask(int type) {
+    // TODO: should check the type in case of bugs
+    tasks.clear();
 }

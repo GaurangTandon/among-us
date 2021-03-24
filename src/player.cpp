@@ -30,3 +30,6 @@ void Player::update(int currentTime) {
     else Sprite = normalSprite;
 }
 
+void Player::enemyHit() {
+    health = 0;
+}

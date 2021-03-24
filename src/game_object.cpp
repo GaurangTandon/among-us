@@ -25,3 +25,7 @@ float GameObject::areaOverlap(const GameObject &b) const {
 
     return prod;
 }
+
+bool GameObject::hasOverlap(const GameObject &b) const {
+    return areaOverlap(b) >= 0.05 * b.area();
+}

@@ -33,6 +33,8 @@ public:
 
     void hit(int time);
 
+    void enemyHit();
+
     int getHealth();
 
     void update(int currenTime);

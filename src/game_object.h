@@ -31,6 +31,8 @@ public:
     float area() const;
 
     float areaOverlap(const GameObject &b) const;
+
+    bool hasOverlap(const GameObject &b) const;
 };
 
 #endif //ASSIGNMENT_GAME_OBJECT_H

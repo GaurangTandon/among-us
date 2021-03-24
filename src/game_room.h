@@ -1,7 +1,9 @@
 #ifndef ASSIGNMENT_GAME_ROOM_H
 #define ASSIGNMENT_GAME_ROOM_H
 
+#include "resource_manager.h"
 #include "game_object.h"
+#include "task.h"
 #include <vector>
 #include <bitset>
 
@@ -21,7 +23,7 @@ class GameRoom : public GameObject {
 private:
     std::vector<RoomDoor> doors;
     std::vector<GameObject> walls;
-    std::vector<GameObject> staticObjects;
+    std::vector<Task> tasks;
 
 public:
     constexpr static glm::vec2 SIZE = glm::vec2(200.0f, 200.0f);
@@ -40,6 +42,14 @@ public:
     glm::vec2 getDoorPosition(int idx);
 
     bool wallOverlaps(const GameObject &object);
+
+    int overlapsTask(const GameObject &object);
+
+    bool addTask(const glm::vec2 &position, int type);
+
+    glm::vec2 getCenterCoordinate();
+
+    void removeTask(int type);
 };
 
 

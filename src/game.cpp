@@ -5,10 +5,16 @@
 #include "player.h"
 #include "text_renderer.h"
 
+constexpr int MAZE_WIDTH = 5;
+constexpr int MAZE_HEIGHT = 5;
+
 SpriteRenderer *Renderer;
 GameMaze *maze;
 Player *player;
 TextRenderer *Text;
+
+int tasksComplete = 0;
+constexpr int TOTAL_TASKS = 2;
 
 Game::Game(unsigned int width, unsigned int height)
         : State(GAME_MENU), Keys(), Width(width), Height(height) {
@@ -24,7 +30,7 @@ Game::~Game() {
 #define pathToFont(filename) "assets/fonts/" filename
 
 void Game::Reset() {
-    maze = new GameMaze(ROOM_TEX_COUNT, 3, 3);
+    maze = new GameMaze(ROOM_TEX_COUNT, MAZE_WIDTH, MAZE_HEIGHT);
 
     {
         auto player_tex = ResourceManager::GetTexture("player");
@@ -93,15 +99,27 @@ void Game::Update(double currentTime, double dt) {
         auto enemyVelocity = velocity / 2;
 
         bool hit = maze->moveEnemy(player->currRoom, *player, enemyVelocity);
-        if (hit) player->hit(int(currentTime));
-        player->update(int(currentTime));
+        if (hit) player->enemyHit();
+        else player->update(int(currentTime));
+
+        int task = maze->getOverlappingTask(*player, player->currRoom);
+
+        if (task > 0) {
+            maze->removeTask(player->currRoom, task);
+            tasksComplete++;
+
+            if (task == 1) {
+                maze->clearEnemies();
+            } else if (task == 2) {
+                maze->releasePowerups();
+            }
+        }
     }
 
     auto lost = getTimeRemaining() == 0 or player->isDead();
 
     if (lost) {
         State = GAME_LOSE;
-        return;
     }
 }
 
@@ -148,7 +166,7 @@ void Game::Render() {
 
         std::vector<std::string> textsToRender = {
                 "Health: " + std::to_string(player->getHealth()),
-                "Tasks: ",
+                "Tasks: " + std::to_string(tasksComplete) + " / " + std::to_string(TOTAL_TASKS),
                 "Light: ",
                 "Time remaining: " + std::to_string(getTimeRemaining())
         };

@@ -1,15 +1,17 @@
 #ifndef ASSIGNMENT_GAME_MAZE_H
 #define ASSIGNMENT_GAME_MAZE_H
 
-#include <stack>
-#include <vector>
-#include <utility>
-#include <iostream>
 #include <bitset>
+#include <iostream>
+#include <stack>
+#include <utility>
+#include <vector>
+
 #include "game_const.h"
 #include "game_room.h"
-#include "resource_manager.h"
 #include "player.h"
+#include "resource_manager.h"
+#include "task.h"
 
 // Do we want to store powerups etc. as part of rooms or inside maze only?
 class GameMaze {
@@ -20,6 +22,7 @@ class GameMaze {
 private:
     std::vector<Player> enemies;
     std::vector<GameRoom> rooms;
+    std::vector<Task> tasks;
     int width, height;
     // fW[i][j] = { next_node, shortest_dist }
     std::vector<std::vector<std::pair<int, int>>> floydWarshall;
@@ -27,7 +30,9 @@ private:
     [[nodiscard]] int room_index(int x, int y) const { return x * width + y; }
 
     std::vector<std::bitset<4>> generateTree(int seed = 0) {
-        srand(seed);
+        if (seed) srand(seed);
+        else srand(time(nullptr));
+
         using PII = std::pair<int, int>;
 
         std::vector<std::vector<bool>> visited(width, std::vector<bool>(height, false));
@@ -141,11 +146,16 @@ private:
         auto enemy_tex = ResourceManager::GetTexture("bowser");
         auto en = Player(room, getPlayerPos(room), enemy_tex, enemy_tex);
         enemies.push_back(en);
-        en.Position = getPlayerPos(room);
     }
 
-    glm::vec2 roomCenterPosition(int idx) {
-        return rooms[idx].Position + rooms[idx].Size / 2.0f;
+
+    void addTasks() {
+        for (int type = 1; type <= 2; type++) {
+            // TODO: choose more "outer" rooms instead of rooms closer to start location
+            auto randRoom = rand() % (rooms.size() - 1) + 1;
+            auto &randRoomObj = rooms[randRoom];
+            randRoomObj.addTask(getPlayerPos(randRoom), type);
+        }
     }
 
 public:
@@ -153,16 +163,14 @@ public:
         generateRooms(tex_count);
 
         addNewEnemy();
+
+        addTasks();
     }
 
     void Draw(SpriteRenderer &renderer) {
-        for (auto &room : rooms)
-            room.Draw(renderer);
-        for (auto &room : rooms)
-            room.DrawAddons(renderer);
-
-        for (auto &enemy : enemies)
-            enemy.Draw(renderer);
+        for (auto &room : rooms) room.Draw(renderer);
+        for (auto &room : rooms) room.DrawAddons(renderer);
+        for (auto &enemy : enemies) enemy.Draw(renderer);
     }
 
     bool moveEnemy(int targetRoom, const GameObject &player, float velocity) {
@@ -218,14 +226,13 @@ public:
         bool hit = false;
 
         for (auto &enemy : enemies)
-            hit = hit or (enemy.areaOverlap(player) >= 0.05 * enemy.area());
+            hit = hit or enemy.hasOverlap(player);
 
         return hit;
     }
 
     void moveAll(const glm::vec2 &displace) {
         for (auto &room : rooms) room.moveAll(displace);
-
         for (auto &enemy : enemies) enemy.Position += displace;
     }
 
@@ -254,9 +261,25 @@ public:
     }
 
     glm::vec2 getPlayerPos(int room) {
-        auto room_center = roomCenterPosition(room);
+        auto room_center = rooms[room].getCenterCoordinate();
         auto player_pos = room_center - PLAYER_SIZE / 2.0f;
         return player_pos;
+    }
+
+    int getOverlappingTask(const GameObject &object, int room) {
+        return rooms[room].overlapsTask(object);
+    }
+
+    void clearEnemies() {
+        enemies.clear();
+    }
+
+    void releasePowerups() {
+
+    }
+
+    void removeTask(int room, int task) {
+        rooms[room].removeTask(task);
     }
 };
 
