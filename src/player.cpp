@@ -24,7 +24,6 @@ int Player::getHealth() {
 
 void Player::update(int currentTime) {
     bool stateNow = inCooldownTimeBased(currentTime), statePrev = inCooldownTimeBased(currentTime - 1);
-    std::cout << currentTime << " " << currentTime - 1 << " " << lastHitTime << std::endl;
     if (stateNow == statePrev) return;
 
     if (stateNow) Sprite = hitSprite;

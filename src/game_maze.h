@@ -137,12 +137,22 @@ private:
         assert(false);
     }
 
+    void addNewEnemy(int room = 0) {
+        auto enemy_tex = ResourceManager::GetTexture("bowser");
+        auto en = Player(room, getPlayerPos(room), enemy_tex, enemy_tex);
+        enemies.push_back(en);
+        en.Position = getPlayerPos(room);
+    }
+
+    glm::vec2 roomCenterPosition(int idx) {
+        return rooms[idx].Position + rooms[idx].Size / 2.0f;
+    }
+
 public:
     GameMaze(int tex_count, int w = 3, int h = 3) : width(w), height(h) {
         generateRooms(tex_count);
 
-        auto enemy_tex = ResourceManager::GetTexture("bowser");
-        enemies.emplace_back(0, PLAYER_SIZE, enemy_tex, enemy_tex);
+        addNewEnemy();
     }
 
     void Draw(SpriteRenderer &renderer) {
@@ -224,11 +234,6 @@ public:
         return room_index(cx, cy);
     }
 
-    glm::vec2 base_room_center_position() {
-        int idx = base_room_idx();
-        return rooms[idx].Position + rooms[idx].Size / 2.0f;
-    }
-
     int find_player_room(const GameObject &player) {
         int idx = -1;
 
@@ -246,6 +251,12 @@ public:
         }
 
         return -1;
+    }
+
+    glm::vec2 getPlayerPos(int room) {
+        auto room_center = roomCenterPosition(room);
+        auto player_pos = room_center - PLAYER_SIZE / 2.0f;
+        return player_pos;
     }
 };
 

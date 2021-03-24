@@ -29,9 +29,8 @@ void Game::Reset() {
     {
         auto player_tex = ResourceManager::GetTexture("player");
         auto player_tex_hit = ResourceManager::GetTexture("player_hit");
-        auto room_center = maze->base_room_center_position();
-        auto player_pos = room_center - PLAYER_SIZE / 2.0f;
         auto player_room = maze->base_room_idx();
+        auto player_pos = maze->getPlayerPos(player_room);
         player = new Player(player_room, player_pos, player_tex, player_tex_hit);
     }
 
