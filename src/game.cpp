@@ -16,6 +16,9 @@ TextRenderer *Text;
 int tasksComplete = 0;
 constexpr int TOTAL_TASKS = 2;
 
+bool enemyCleared = false;
+bool powerupsReleased = false;
+
 Game::Game(unsigned int width, unsigned int height)
         : State(GAME_MENU), Keys(), Width(width), Height(height) {
 
@@ -95,23 +98,30 @@ float getVelocty(double dt) {
 
 void Game::Update(double currentTime, double dt) {
     if (State == GAME_ACTIVE) {
-        auto velocity = getVelocty(dt);
-        auto enemyVelocity = velocity / 2;
+        {
+            auto velocity = getVelocty(dt);
+            auto enemyVelocity = velocity / 2;
 
-        bool hit = maze->moveEnemy(player->currRoom, *player, enemyVelocity);
-        if (hit) player->enemyHit();
-        else player->update(int(currentTime));
+            bool hit = maze->moveEnemy(player->currRoom, *player, enemyVelocity);
 
-        int task = maze->getOverlappingTask(*player, player->currRoom);
+            if (hit) player->enemyHit();
+            else player->update(int(currentTime));
+        }
 
-        if (task > 0) {
-            maze->removeTask(player->currRoom, task);
-            tasksComplete++;
+        {
+            int task = maze->getOverlappingTask(*player, player->currRoom);
 
-            if (task == 1) {
-                maze->clearEnemies();
-            } else if (task == 2) {
-                maze->releasePowerups();
+            if (task > 0) {
+                maze->removeTask(player->currRoom, task);
+                tasksComplete++;
+
+                if (task == 1) {
+                    enemyCleared = true;
+                    maze->clearEnemies();
+                } else if (task == 2) {
+                    powerupsReleased = true;
+                    maze->releasePowerups();
+                }
             }
         }
     }
@@ -168,8 +178,12 @@ void Game::Render() {
                 "Health: " + std::to_string(player->getHealth()),
                 "Tasks: " + std::to_string(tasksComplete) + " / " + std::to_string(TOTAL_TASKS),
                 "Light: ",
-                "Time remaining: " + std::to_string(getTimeRemaining())
+                "Time remaining: " + std::to_string(getTimeRemaining()),
+
         };
+        if (enemyCleared) textsToRender.emplace_back("Enemies cleared");
+        if (powerupsReleased) textsToRender.emplace_back("Powerups released");
+
 
         float yOffset = 5.0f;
 
