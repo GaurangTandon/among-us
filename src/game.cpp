@@ -1,5 +1,3 @@
-#include <sys/stat.h>
-#include <z3.h>
 #include "game.h"
 #include "sprite_renderer.h"
 #include "resource_manager.h"
@@ -26,14 +24,15 @@ Game::~Game() {
 #define pathToFont(filename) "assets/fonts/" filename
 
 void Game::Reset() {
-    maze = new GameMaze(ROOM_TEX_COUNT, 10, 10);
+    maze = new GameMaze(ROOM_TEX_COUNT, 3, 3);
 
     {
         auto player_tex = ResourceManager::GetTexture("player");
+        auto player_tex_hit = ResourceManager::GetTexture("player_hit");
         auto room_center = maze->base_room_center_position();
         auto player_pos = room_center - PLAYER_SIZE / 2.0f;
         auto player_room = maze->base_room_idx();
-        player = new Player(player_room, player_pos, player_tex);
+        player = new Player(player_room, player_pos, player_tex, player_tex_hit);
     }
 
     endTime = glfwGetTime() + DURATION;
@@ -62,6 +61,7 @@ void Game::Init() {
     // load textures
     ResourceManager::LoadTexture(pathToTexture("transparent.png"), true, "door");
     ResourceManager::LoadTexture(pathToTexture("mario_transparent.png"), true, "player");
+    ResourceManager::LoadTexture(pathToTexture("mario_transparent_hit.png"), true, "player_hit");
     ResourceManager::LoadTexture(pathToTexture("bowser_transparent.png"), true, "bowser");
 
     ResourceManager::LoadTexture(pathToTexture("black-square.png"), false, "wall");
@@ -88,16 +88,21 @@ float getVelocty(double dt) {
     return 400.0f * float(dt);
 }
 
-void Game::Update(double dt) {
+void Game::Update(double currentTime, double dt) {
     if (State == GAME_ACTIVE) {
         auto velocity = getVelocty(dt);
         auto enemyVelocity = velocity / 2;
 
-        maze->moveEnemy(player->currRoom, *player, enemyVelocity);
+        bool hit = maze->moveEnemy(player->currRoom, *player, enemyVelocity);
+        if (hit) player->hit(int(currentTime));
+        player->update(int(currentTime));
     }
 
-    if (getTimeRemaining() == 0) {
+    auto lost = getTimeRemaining() == 0 or player->isDead();
+
+    if (lost) {
         State = GAME_LOSE;
+        return;
     }
 }
 
@@ -143,7 +148,7 @@ void Game::Render() {
         player->Draw(*Renderer);
 
         std::vector<std::string> textsToRender = {
-                "Health: ",
+                "Health: " + std::to_string(player->getHealth()),
                 "Tasks: ",
                 "Light: ",
                 "Time remaining: " + std::to_string(getTimeRemaining())

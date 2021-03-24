@@ -135,7 +135,6 @@ private:
             if (candRoom == nextRoom) return i;
         }
         assert(false);
-        return -1;
     }
 
 public:
@@ -143,7 +142,7 @@ public:
         generateRooms(tex_count);
 
         auto enemy_tex = ResourceManager::GetTexture("bowser");
-        enemies.emplace_back(0, PLAYER_SIZE, enemy_tex);
+        enemies.emplace_back(0, PLAYER_SIZE, enemy_tex, enemy_tex);
     }
 
     void Draw(SpriteRenderer &renderer) {
@@ -156,7 +155,7 @@ public:
             enemy.Draw(renderer);
     }
 
-    void moveEnemy(int targetRoom, const GameObject &player, float velocity) {
+    bool moveEnemy(int targetRoom, const GameObject &player, float velocity) {
         auto move_towards_target = [&velocity](GameObject &object, const glm::vec2 &targetPos) {
             auto &currPos = object.Position;
             std::vector<int> indices = {0, 1};
@@ -205,6 +204,13 @@ public:
             auto nextDoorPosition = nextRoomObj.getDoorPosition(nextDoorIndex);
             move_towards_target(enemy, nextDoorPosition);
         }
+
+        bool hit = false;
+
+        for (auto &enemy : enemies)
+            hit = hit or (enemy.areaOverlap(player) >= 0.05 * enemy.area());
+
+        return hit;
     }
 
     void moveAll(const glm::vec2 &displace) {

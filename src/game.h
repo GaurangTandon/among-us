@@ -33,7 +33,7 @@ public:
     // game loop
     void ProcessInput(double dt);
 
-    void Update(double dt);
+    void Update(double currentTime, double dt);
 
     void Render();
 
