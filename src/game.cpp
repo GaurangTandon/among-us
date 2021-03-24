@@ -1,9 +1,11 @@
+
 #include "game.h"
 #include "sprite_renderer.h"
 #include "resource_manager.h"
 #include "game_maze.h"
 #include "player.h"
 #include "text_renderer.h"
+
 
 constexpr int MAZE_WIDTH = 3;
 constexpr int MAZE_HEIGHT = 3;
@@ -86,10 +88,14 @@ void Game::Init() {
     }
 
     // TODO: delete when finished
-//    {
-//        State = GAME_ACTIVE;
-//        Reset();
-//    }
+    {
+        State = GAME_ACTIVE;
+        Reset();
+    }
+
+//    GLfloat light1PosType[] = {100.0, 100.0, 0.0, 1.0};
+//    glLightfv(GL_LIGHT1, GL_POSITION, light1PosType);
+//    glEnable(GL_LIGHT1);
 }
 
 float getVelocty(double dt) {
@@ -195,18 +201,40 @@ void Game::Render() {
         }
     };
 
+    auto renderTextCenter = [&](const std::vector<std::string> &texts) {
+        float yOffset = 200.0f;
+
+        for (auto &str : texts) {
+            Text->RenderText(str, 350.0f, yOffset, 2.0f, glm::vec3(1.0f, 0.4f, 1.0f));
+            yOffset += 2 * CHAR_HEIGHT;
+        }
+    };
+
     auto renderMenu = [&]() {
         std::vector<std::string> textsToRender = {
                 "Welcome to AmongUs!",
                 "Press Space to start"
         };
 
-        float yOffset = 200.0f;
+        renderTextCenter(textsToRender);
+    };
 
-        for (auto &str : textsToRender) {
-            Text->RenderText(str, 350.0f, yOffset, 2.0f, glm::vec3(1.0f, 0.4f, 1.0f));
-            yOffset += 2 * CHAR_HEIGHT;
-        }
+    auto renderWinner = [&]() {
+        std::vector<std::string> textsToRender = {
+                "You won the game!",
+                "Press Space to play again!"
+        };
+
+        renderTextCenter(textsToRender);
+    };
+
+    auto renderLose = [&]() {
+        std::vector<std::string> textsToRender = {
+                "Sadly, you lost! :(",
+                "Press Space to restart"
+        };
+
+        renderTextCenter(textsToRender);
     };
 
     switch (this->State) {
@@ -217,10 +245,10 @@ void Game::Render() {
             renderMenu();
             break;
         case GAME_WIN:
-//            renderWinner();
+            renderWinner();
             break;
         case GAME_LOSE:
-//            renderLose();
+            renderLose();
             break;
     }
 }

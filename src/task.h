@@ -13,5 +13,12 @@ public:
     }
 };
 
+class Powerup : public GameObject {
+public:
+    int score;
+
+    Powerup(glm::vec2 pos, Texture2D texture, int s) : GameObject(pos, TASK_SIZE, texture), score(s) {
+    }
+};
 
 #endif //AMONGUS_TASK_H

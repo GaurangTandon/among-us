@@ -12,5 +12,5 @@ set(TARGET_NAME ${PROJECT_NAME})
 add_executable(${TARGET_NAME} ${SOURCES})
 
 target_compile_options(${TARGET_NAME} PRIVATE -g -O2) # -fsanitize=address -fsanitize=undefined)
-target_link_libraries(${TARGET_NAME} PRIVATE freetype pthread glfw GLU GL Xrandr Xxf86vm Xi Xinerama X11 rt dl) #-fsanitize=address -fsanitize=undefined)
+target_link_libraries(${TARGET_NAME} PRIVATE freetype pthread glfw GL GLU Xrandr Xxf86vm Xi Xinerama X11 rt dl) #-fsanitize=address -fsanitize=undefined)
 

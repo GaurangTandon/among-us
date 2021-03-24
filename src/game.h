@@ -1,7 +1,11 @@
 #ifndef A1_GAM_H
 #define A1_GAM_H
 
+//#define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
+//#define GLFW_INCLUDE_NONE
+//#include <GL/gl.h>
+//#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 // Represents the current state of the game
