@@ -134,23 +134,12 @@ private:
         }
     }
 
-    int doorIndex(int currRoom, int nextRoom) {
-        for (int i = 0; i < 4; i++) {
-            int candRoom = currRoom + dx[i] * width + dy[i];
-            if (candRoom == nextRoom) return i;
-        }
-        assert(false);
-    }
-
     void addNewEnemy(int room = 0) {
         auto enemy_tex = ResourceManager::GetTexture("elite");
-        auto en = Player(room, getPlayerPos(room), enemy_tex, {enemy_tex});
-        enemies.push_back(en);
+        enemies.emplace_back(Player(room, getPlayerPos(room), enemy_tex, {enemy_tex}));
     }
 
-
     void addTasks() {
-
         for (int type = 1; type <= 2; type++) {
             // TODO: choose more "outer" rooms instead of rooms closer to start location
             // "outer" based on distance using floyd warshall
@@ -194,38 +183,26 @@ public:
             }
         };
 
-        const auto &playerPos = player.Position;
-
         for (auto &enemy : enemies) {
             const auto &currRoom = enemy.currRoom;
 
             if (targetRoom == currRoom) {
+                const auto &playerPos = player.Position;
                 move_towards_target(enemy, playerPos);
                 continue;
             }
 
             auto nextRoom = floydWarshall[currRoom][targetRoom].first;
-            auto &currRoomObj = rooms[currRoom];
-            int currDoorIndex = doorIndex(currRoom, nextRoom);
-            auto currDoorPosition = currRoomObj.getDoorPosition(currDoorIndex);
+            const auto &currRoomObj = rooms[currRoom];
+            const auto &nextRoomObj = rooms[nextRoom];
 
-            auto nextRoomObj = rooms[nextRoom];
-            auto nextDoorIndex = doorIndex(nextRoom, currRoom);
-
-            auto currDoorAllows = currRoomObj.doorAllowsObject(enemy, currDoorIndex);
-            auto nextDoorAllows = nextRoomObj.doorAllowsObject(enemy, nextDoorIndex);
-
-            if (not currDoorAllows) {
-                if (nextDoorAllows) {
-                    enemy.currRoom = nextRoom;
-                } else {
-                    move_towards_target(enemy, currDoorPosition);
-                    continue;
-                }
-            }
-
-            auto nextDoorPosition = nextRoomObj.getDoorPosition(nextDoorIndex);
-            move_towards_target(enemy, nextDoorPosition);
+            if (nextRoomObj.contains(enemy)) {
+                enemy.currRoom = nextRoom;
+            } else if (currRoomObj.contains(enemy, 0.01f)) {
+                auto dir = glm::normalize(nextRoomObj.Position - currRoomObj.Position);
+                enemy.Position += dir * velocity;
+            } else
+                assert(false);
         }
 
         bool hit = false;

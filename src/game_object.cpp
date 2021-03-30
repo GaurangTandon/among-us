@@ -26,3 +26,16 @@ float GameObject::areaOverlap(const GameObject &b) const {
 bool GameObject::hasOverlap(const GameObject &b) const {
     return areaOverlap(b) >= 0.05 * b.area();
 }
+
+
+bool GameObject::contains(const GameObject &b, float threshold) const {
+    return areaOverlap(b) >= threshold * b.area();
+}
+
+bool GameObject::partialContains(const GameObject &b) const {
+    return contains(b, 0.45);
+}
+
+glm::vec2 GameObject::getCenterCoordinate() const {
+    return Position + Size / 2.0f;
+}

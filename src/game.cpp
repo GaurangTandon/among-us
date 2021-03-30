@@ -72,7 +72,6 @@ void Game::Init() {
     Renderer = new SpriteRenderer(x);
 
     // load textures
-    ResourceManager::LoadTexture(pathToTexture("transparent.png"), true, "door");
     ResourceManager::LoadTexture(pathToTexture("rest.png"), true, "player");
     ResourceManager::LoadTexture(pathToTexture("elite.png"), true, "elite");
 

@@ -34,6 +34,12 @@ public:
     float areaOverlap(const GameObject &b) const;
 
     bool hasOverlap(const GameObject &b) const;
+
+    bool contains(const GameObject &b, float threshold = 0.99) const;
+
+    bool partialContains(const GameObject &b) const;
+
+    glm::vec2 getCenterCoordinate() const;
 };
 
 #endif //ASSIGNMENT_GAME_OBJECT_H
