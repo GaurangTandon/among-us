@@ -288,6 +288,7 @@ void Game::Render() {
     auto renderLose = [&]() {
         std::vector<std::string> textsToRender = {
                 "Sadly, you lost! :(",
+                getTimeRemaining() == 0 ? "You ran out of time!" : "You died!",
                 "Press Space to restart"
         };
 
