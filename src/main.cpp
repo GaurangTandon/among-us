@@ -64,7 +64,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    auto window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Assignment Zero", NULL, NULL);
+    auto window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Assignment One", NULL, NULL);
     if (not window) {
         std::cout << "Oops, no window for you!" << std::endl;
         glfwTerminate();
