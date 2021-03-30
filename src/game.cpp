@@ -7,8 +7,8 @@
 #include "text_renderer.h"
 
 
-constexpr int MAZE_WIDTH = 3;
-constexpr int MAZE_HEIGHT = 3;
+constexpr int MAZE_WIDTH = 5;
+constexpr int MAZE_HEIGHT = 5;
 
 SpriteRenderer *Renderer;
 GameMaze *maze;
@@ -121,6 +121,10 @@ void Game::Update(double currentTime, double dt) {
                 maze->removeTask(player->currRoom, task);
                 tasksComplete++;
 
+                if (tasksComplete == TOTAL_TASKS) {
+                    maze->setAllTasksComplete();
+                }
+
                 if (task == 1) {
                     enemyCleared = true;
                     maze->clearEnemies();
@@ -135,6 +139,11 @@ void Game::Update(double currentTime, double dt) {
 
         if (lost) {
             State = GAME_LOSE;
+        }
+
+        auto win = maze->isInExitNode(player->currRoom);
+        if (win) {
+            State = GAME_WIN;
         }
     }
 
@@ -178,6 +187,7 @@ void Game::ProcessInput(double dt) {
 
 void Game::Render() {
     auto CHAR_HEIGHT = 20;
+    auto textColor = glm::vec3(1.0f, 0.4f, 1.0f);
 
     auto renderActiveGame = [&]() {
         maze->Draw(*Renderer);
@@ -196,8 +206,27 @@ void Game::Render() {
         float yOffset = 5.0f;
 
         for (auto &str : textsToRender) {
-            Text->RenderText(str, 5.0f, yOffset, 1.0f, glm::vec3(1.0f, 0.4f, 1.0f));
+            Text->RenderText(str, 5.0f, yOffset, 1.0f, textColor);
             yOffset += CHAR_HEIGHT;
+        }
+
+        yOffset = 5.0f;
+        auto renderLocation = [&CHAR_HEIGHT, &textColor, &yOffset](const std::string desc, int room) {
+            auto[px, py] = maze->getRoomCoordinate(room);
+            auto pstr = desc + " location: (" + std::to_string(px) + ", " + std::to_string(py) + ")";
+
+            Text->RenderText(pstr, SCREEN_WIDTH - 400.0f, yOffset, 1.0f, textColor);
+            yOffset += CHAR_HEIGHT;
+        };
+
+        renderLocation("Player", player->currRoom);
+        auto room = maze->getEnemyRoom();
+        if (room != -1) {
+            renderLocation("Impostor", maze->getEnemyRoom());
+        }
+
+        if (maze->isAllTasksComplete()) {
+            renderLocation("Exit room", maze->getExitRoomIndex());
         }
     };
 

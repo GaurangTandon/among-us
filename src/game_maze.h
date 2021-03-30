@@ -20,6 +20,7 @@ class GameMaze {
     static constexpr int rev_idx[4] = {1, 0, 3, 2};
 
 private:
+    bool exitNodeEnabled;
     std::vector<Player> enemies;
     std::vector<GameRoom> rooms;
     std::vector<Task> tasks;
@@ -27,7 +28,6 @@ private:
     // fW[i][j] = { next_node, shortest_dist }
     std::vector<std::vector<std::pair<int, int>>> floydWarshall;
 
-    [[nodiscard]] int room_index(int x, int y) const { return x * width + y; }
 
     std::vector<std::bitset<4>> generateTree(int seed = 0) {
         if (seed) srand(seed);
@@ -60,7 +60,7 @@ private:
             auto &[nx, ny] = st.top();
             st.pop();
 
-            int node_idx = room_index(nx, ny);
+            int node_idx = getRoomIndex(nx, ny);
             std::vector<std::pair<int, PII>> neighbours;
 
             for (int i = 0; i < 4; i++) {
@@ -81,7 +81,7 @@ private:
             visited[cx][cy] = true;
             st.push({cx, cy});
 
-            auto chosen_node_idx = room_index(cx, cy);
+            auto chosen_node_idx = getRoomIndex(cx, cy);
 
             door_data[node_idx][idx] = true;
             door_data[chosen_node_idx][rev_idx[idx]] = true;
@@ -158,6 +158,7 @@ private:
         }
     }
 
+
 public:
     GameMaze(int tex_count, int w = 3, int h = 3) : width(w), height(h) {
         generateRooms(tex_count);
@@ -165,6 +166,8 @@ public:
         addNewEnemy();
 
         addTasks();
+
+        exitNodeEnabled = false;
     }
 
     void Draw(SpriteRenderer &renderer) {
@@ -238,7 +241,7 @@ public:
 
     int base_room_idx() {
         auto[cx, cy] = base_room_coordinate();
-        return room_index(cx, cy);
+        return getRoomIndex(cx, cy);
     }
 
     int find_player_room(const GameObject &player) {
@@ -280,6 +283,35 @@ public:
 
     void removeTask(int room, int task) {
         rooms[room].removeTask(task);
+    }
+
+    bool isInExitNode(int currRoom) {
+        return exitNodeEnabled and getExitRoomIndex() == currRoom;
+    }
+
+    void setAllTasksComplete() {
+        exitNodeEnabled = true;
+        // TODO: add render
+    }
+
+    bool isAllTasksComplete() {
+        return exitNodeEnabled;
+    }
+
+    std::pair<int, int> getRoomCoordinate(int roomIndex) {
+        return {roomIndex / width, roomIndex % width};
+    }
+
+    int getRoomIndex(int x, int y) const { return x * width + y; }
+
+    int getEnemyRoom() {
+        if (enemies.empty()) return -1;
+        return enemies[0].currRoom;
+    }
+
+    // TODO: determine room based on longest distance
+    int getExitRoomIndex() {
+        return getRoomIndex(0, 0);
     }
 };
 
