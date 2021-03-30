@@ -1,35 +1,34 @@
-#include <iostream>
 #include "player.h"
 
-
-void Player::hit(int time) {
-    if (inCooldownTimeBased(time)) return;
-
-    lastHitTime = time;
-    health -= DAMAGE;
-}
-
-bool Player::inCooldownTimeBased(int time) {
-    auto diff = time - lastHitTime;
-    return diff <= COOLDOWN_TIME and diff >= 0;
-}
-
 bool Player::isDead() {
-    return health == 0;
+    return dead;
 }
 
 int Player::getHealth() {
     return health;
 }
 
-void Player::update(int currentTime) {
-    bool stateNow = inCooldownTimeBased(currentTime), statePrev = inCooldownTimeBased(currentTime - 1);
-    if (stateNow == statePrev) return;
+// booleans true if keys wasd pressed
+void Player::update(bool wOrS, bool a, bool d) {
+    assert(a + d <= 1);
 
-    if (stateNow) Sprite = hitSprite;
-    else Sprite = normalSprite;
+    bool moving = wOrS or a or d;
+    if (moving) {
+#define WAIT 4
+        timer++;
+        timer %= movingSps.size() * WAIT;
+        this->Sprite = movingSps[timer / WAIT];
+    } else if (timer > 0) {
+        timer = 0;
+        this->Sprite = restSp;
+    }
+
+    // TODO: invert direction of image based on a or d
+    if (a) {
+    } else if (d) {
+    }
 }
 
 void Player::enemyHit() {
-    health = 0;
+    dead = true;
 }

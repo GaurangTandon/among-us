@@ -39,10 +39,13 @@ void Game::Reset() {
 
     {
         auto player_tex = ResourceManager::GetTexture("player");
-        auto player_tex_hit = ResourceManager::GetTexture("player_hit");
+        std::vector<Texture2D> movingSprites;
+        for (int i = 1; i <= 6; i++)
+            movingSprites.push_back(ResourceManager::GetTexture("stand-" + std::to_string(i)));
+
         auto player_room = maze->base_room_idx();
         auto player_pos = maze->getPlayerPos(player_room);
-        player = new Player(player_room, player_pos, player_tex, player_tex_hit);
+        player = new Player(player_room, player_pos, player_tex, movingSprites);
     }
 
     endTime = glfwGetTime() + DURATION;
@@ -70,8 +73,7 @@ void Game::Init() {
 
     // load textures
     ResourceManager::LoadTexture(pathToTexture("transparent.png"), true, "door");
-    ResourceManager::LoadTexture(pathToTexture("mario_transparent.png"), true, "player");
-    ResourceManager::LoadTexture(pathToTexture("mario_transparent_hit.png"), true, "player_hit");
+    ResourceManager::LoadTexture(pathToTexture("rest.png"), true, "player");
     ResourceManager::LoadTexture(pathToTexture("bowser_transparent.png"), true, "bowser");
 
     ResourceManager::LoadTexture(pathToTexture("black-square.png"), false, "wall");
@@ -85,6 +87,17 @@ void Game::Init() {
         path_c[path.length()] = 0;
 
         ResourceManager::LoadTexture(path_c, false, name);
+    }
+
+    for (int i = 1; i <= 6; i++) {
+        std::string name = "stand-" + std::to_string(i);
+        auto path = ("assets/textures/" + name + ".png");
+
+        char *path_c = (char *) malloc(sizeof(char) * (path.length() + 1));
+        for (int j = 0; j < path.length(); j++) path_c[j] = path[j];
+        path_c[path.length()] = 0;
+
+        ResourceManager::LoadTexture(path_c, true, name);
     }
 
     // TODO: delete when finished
@@ -111,7 +124,6 @@ void Game::Update(double currentTime, double dt) {
             bool hit = maze->moveEnemy(player->currRoom, *player, enemyVelocity);
 
             if (hit) player->enemyHit();
-            else player->update(int(currentTime));
         }
 
         {
@@ -173,9 +185,14 @@ void Game::ProcessInput(double dt) {
                 if (roomBelongs == -1) maze->moveAll(-mazeDisplace);
                 else player->currRoom = roomBelongs;
 
-                return;
+                break;
             }
         }
+
+        bool wors_key = pressed(GLFW_KEY_W) or pressed(GLFW_KEY_S);
+        bool a_key = pressed(GLFW_KEY_A);
+        bool d_key = pressed(GLFW_KEY_D);
+        player->update(wors_key, a_key, d_key);
     } else {
         if (pressed(GLFW_KEY_SPACE)) {
             Reset();

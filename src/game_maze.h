@@ -144,7 +144,7 @@ private:
 
     void addNewEnemy(int room = 0) {
         auto enemy_tex = ResourceManager::GetTexture("bowser");
-        auto en = Player(room, getPlayerPos(room), enemy_tex, enemy_tex);
+        auto en = Player(room, getPlayerPos(room), enemy_tex, {enemy_tex});
         enemies.push_back(en);
     }
 
