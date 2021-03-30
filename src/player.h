@@ -11,7 +11,7 @@ const glm::vec2 PLAYER_SIZE = glm::vec2(35.0f, 40.0f);
 class Player : public GameObject {
 private:
     int health;
-    bool dead;
+    bool hasEnemyHit;
     int timer;
 
     Texture2D restSp;
@@ -24,8 +24,8 @@ public:
                                                                                                              PLAYER_SIZE,
                                                                                                              restSprite),
                                                                                                   currRoom(room),
-                                                                                                  timer(0), health(0),
-                                                                                                  dead(false),
+                                                                                                  timer(0), health(50),
+                                                                                                  hasEnemyHit(false),
                                                                                                   restSp(restSprite),
                                                                                                   movingSps(std::move(
                                                                                                           movingSprites)) {
@@ -39,6 +39,10 @@ public:
     int getHealth();
 
     void update(bool, bool, bool);
+
+    void hitObstacle();
+
+    void pointsBoost();
 };
 
 

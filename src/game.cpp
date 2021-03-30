@@ -77,7 +77,7 @@ void Game::Init() {
 
     ResourceManager::LoadTexture(pathToTexture("black-square.png"), false, "wall");
 
-    ResourceManager::LoadTexture(pathToTexture("flag.png"), true, "points_boost");
+    ResourceManager::LoadTexture(pathToTexture("flag.png"), false, "points");
     ResourceManager::LoadTexture(pathToTexture("sword.png"), true, "obstacle");
 
     ResourceManager::LoadTexture(pathToTexture("obstacle.png"), true, "enemy_killer");
@@ -136,18 +136,24 @@ void Game::Update(double currentTime, double dt) {
 
             if (task > 0) {
                 maze->removeTask(player->currRoom, task);
-                tasksComplete++;
 
-                if (tasksComplete == TOTAL_TASKS) {
-                    maze->setAllTasksComplete();
-                }
+                if (task == 1 or task == 2) {
+                    tasksComplete++;
 
-                if (task == 1) {
-                    enemyCleared = true;
-                    maze->clearEnemies();
-                } else if (task == 2) {
-                    powerupsReleased = true;
-                    maze->releasePowerups();
+                    if (tasksComplete == TOTAL_TASKS) {
+                        maze->setAllTasksComplete();
+                    }
+
+                    if (task == 1) {
+                        enemyCleared = true;
+                        maze->clearEnemies();
+                    } else if (task == 2) {
+                        powerupsReleased = true;
+                        maze->releasePowerups();
+                    }
+                } else {
+                    if (task == 3) player->hitObstacle();
+                    else player->pointsBoost();
                 }
             }
         }

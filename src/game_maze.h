@@ -1,8 +1,10 @@
 #ifndef ASSIGNMENT_GAME_MAZE_H
 #define ASSIGNMENT_GAME_MAZE_H
 
+#include <algorithm>
 #include <bitset>
 #include <iostream>
+#include <random>
 #include <stack>
 #include <utility>
 #include <vector>
@@ -257,7 +259,20 @@ public:
     }
 
     void releasePowerups() {
+        std::vector<int> choice(rooms.size());
+        std::iota(choice.begin(), choice.end(), 0);
 
+        std::random_device dev;
+        std::mt19937 mt(dev());
+        std::shuffle(choice.begin(), choice.end(), mt);
+
+        const int take = int(0.2f * rooms.size());
+
+        for (int i = 0; i < take; i++) {
+            auto roomIdx = choice[i];
+
+            rooms[roomIdx].addTask(getPlayerPos(roomIdx), 3 + dev() % 2);
+        }
     }
 
     void removeTask(int room, int task) {

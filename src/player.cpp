@@ -1,7 +1,9 @@
 #include "player.h"
 
+const int HEALTH_DELTA = 10;
+
 bool Player::isDead() {
-    return dead;
+    return hasEnemyHit or health < 0;
 }
 
 int Player::getHealth() {
@@ -31,5 +33,13 @@ void Player::update(bool wOrS, bool a, bool d) {
 }
 
 void Player::enemyHit() {
-    dead = true;
+    hasEnemyHit = true;
+}
+
+void Player::hitObstacle() {
+    health -= HEALTH_DELTA;
+}
+
+void Player::pointsBoost() {
+    health += HEALTH_DELTA;
 }

@@ -66,7 +66,9 @@ int GameRoom::overlapsTask(const GameObject &object) {
 }
 
 bool GameRoom::addTask(const glm::vec2 &position, int type) {
-    const auto &taskTex = ResourceManager::GetTexture((type == 1) ? "enemy_killer" : "powerup_release");
+    const auto taskTexPath =
+            type == 1 ? "enemy_killer" : type == 2 ? "powerup_release" : type == 3 ? "obstacle" : "points";
+    const auto &taskTex = ResourceManager::GetTexture(taskTexPath);
 
     auto task = Task(position, taskTex, type);
     tasks.push_back(task);
@@ -75,6 +77,10 @@ bool GameRoom::addTask(const glm::vec2 &position, int type) {
 }
 
 void GameRoom::removeTask(int type) {
-    // TODO: should check the type in case of bugs
-    tasks.clear();
+    for (int i = 0; i < tasks.size(); i++) {
+        if (tasks[i].type == type) {
+            tasks.erase(tasks.begin() + i);
+            i--;
+        }
+    }
 }
