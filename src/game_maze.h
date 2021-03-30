@@ -150,8 +150,10 @@ private:
 
 
     void addTasks() {
+
         for (int type = 1; type <= 2; type++) {
             // TODO: choose more "outer" rooms instead of rooms closer to start location
+            // "outer" based on distance using floyd warshall
             auto randRoom = rand() % (rooms.size() - 1) + 1;
             auto &randRoomObj = rooms[randRoom];
             randRoomObj.addTask(getPlayerPos(randRoom), type);
