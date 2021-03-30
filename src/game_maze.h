@@ -25,7 +25,7 @@ private:
     bool exitNodeEnabled;
     std::vector<Player> enemies;
     std::vector<GameRoom> rooms;
-    std::vector<Task> tasks;
+    std::pair<int, int> exitRoom;
     int width, height;
     // fW[i][j] = { next_node, shortest_dist }
     std::vector<std::vector<std::pair<int, int>>> floydWarshall;
@@ -141,16 +141,25 @@ private:
         enemies.emplace_back(Player(room, getPlayerPos(room), enemy_tex, {enemy_tex}));
     }
 
-    void addTasks() {
-        for (int type = 1; type <= 2; type++) {
-            // TODO: choose more "outer" rooms instead of rooms closer to start location
-            // "outer" based on distance using floyd warshall
-            auto randRoom = rand() % (rooms.size() - 1) + 1;
-            auto &randRoomObj = rooms[randRoom];
-            randRoomObj.addTask(getPlayerPos(randRoom), type);
-        }
+    std::vector<int> getFarthestRooms(int sourceRoom) {
+        std::vector<int> roomIndices(rooms.size());
+        std::iota(roomIndices.begin(), roomIndices.end(), 0);
+        std::sort(roomIndices.begin(), roomIndices.end(), [&](auto a, auto b) {
+            return floydWarshall[a][sourceRoom].second > floydWarshall[b][sourceRoom].second;
+        });
+
+        return roomIndices;
     }
 
+    void addTasks(int playerRoom) {
+        auto roomIndices = getFarthestRooms(playerRoom);
+
+        for (int type = 1; type <= 2; type++) {
+            auto roomIndex = roomIndices[type - 1];
+            auto &randRoomObj = rooms[roomIndex];
+            randRoomObj.addTask(getPlayerPos(roomIndex), type);
+        }
+    }
 
 public:
     GameMaze(int tex_count, int w = 3, int h = 3) : width(w), height(h) {
@@ -158,7 +167,7 @@ public:
 
         addNewEnemy();
 
-        addTasks();
+        addTasks(getRoomIndex(base_room_coordinate()));
 
         exitNodeEnabled = false;
     }
@@ -198,13 +207,15 @@ public:
             const auto &currRoomObj = rooms[currRoom];
             const auto &nextRoomObj = rooms[nextRoom];
 
-            if (nextRoomObj.contains(enemy)) {
+            if (nextRoomObj.contains(enemy, 0.99)) {
                 enemy.currRoom = nextRoom;
             } else if (currRoomObj.contains(enemy, 0.01f)) {
                 auto dir = glm::normalize(nextRoomObj.Position - currRoomObj.Position);
                 enemy.Position += dir * velocity;
-            } else
-                assert(false);
+            } else {
+                std::cout << currRoom << " " << nextRoom << std::endl;
+//                assert(false);
+            }
         }
 
         bool hit = false;
@@ -279,13 +290,15 @@ public:
         rooms[room].removeTask(task);
     }
 
-    bool isInExitNode(int currRoom) {
-        return exitNodeEnabled and getExitRoomIndex() == currRoom;
+    bool isCollideWithExitNode(const GameObject &player, int currRoom) {
+        return exitNodeEnabled and getExitRoomIndex() == currRoom and rooms[currRoom].exitNodeOverlap(player);
     }
 
-    void setAllTasksComplete() {
+    void setAllTasksComplete(int playerRoom) {
         exitNodeEnabled = true;
-        // TODO: add render
+        auto roomIdx = getFarthestRooms(playerRoom)[0];
+        exitRoom = getRoomCoordinate(roomIdx);
+        rooms[roomIdx].setExitNode();
     }
 
     bool isAllTasksComplete() {
@@ -298,14 +311,17 @@ public:
 
     int getRoomIndex(int x, int y) const { return x * width + y; }
 
+    int getRoomIndex(std::pair<int, int> p) {
+        return getRoomIndex(p.first, p.second);
+    }
+
     int getEnemyRoom() {
         if (enemies.empty()) return -1;
         return enemies[0].currRoom;
     }
 
-    // TODO: determine room based on longest distance
     int getExitRoomIndex() {
-        return getRoomIndex(0, 0);
+        return getRoomIndex(exitRoom);
     }
 };
 

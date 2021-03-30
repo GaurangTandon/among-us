@@ -12,6 +12,8 @@ private:
     std::vector<GameObject> walls;
     std::vector<Task> tasks;
     std::vector<Powerup> powerups;
+    bool isExitNode;
+    GameObject exitLabel;
 
 public:
     constexpr static glm::vec2 SIZE = glm::vec2(200.0f, 200.0f);
@@ -32,6 +34,10 @@ public:
     bool addTask(const glm::vec2 &position, int type);
 
     void removeTask(int type);
+
+    void setExitNode();
+
+    bool exitNodeOverlap(const GameObject &b);
 };
 
 

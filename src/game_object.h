@@ -37,9 +37,9 @@ public:
 
     bool contains(const GameObject &b, float threshold = 0.99) const;
 
-    bool partialContains(const GameObject &b) const;
-
     glm::vec2 getCenterCoordinate() const;
+
+    void move(const glm::vec2&);
 };
 
 #endif //ASSIGNMENT_GAME_OBJECT_H

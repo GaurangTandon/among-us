@@ -83,6 +83,8 @@ void Game::Init() {
     ResourceManager::LoadTexture(pathToTexture("obstacle.png"), true, "enemy_killer");
     ResourceManager::LoadTexture(pathToTexture("shield.png"), true, "powerup_release");
 
+    ResourceManager::LoadTexture(pathToTexture("pelican.png"), true, "exit");
+
     for (int i = 0; i < ROOM_TEX_COUNT; i++) {
         std::string name = "room" + std::to_string(i);
         auto path = ("assets/textures/" + name + ".png");
@@ -103,12 +105,6 @@ void Game::Init() {
         path_c[path.length()] = 0;
 
         ResourceManager::LoadTexture(path_c, true, name);
-    }
-
-    // TODO: delete when finished
-    {
-        State = GAME_ACTIVE;
-        Reset();
     }
 
 //    GLfloat light1PosType[] = {100.0, 100.0, 0.0, 1.0};
@@ -141,13 +137,13 @@ void Game::Update(double currentTime, double dt) {
                     tasksComplete++;
 
                     if (tasksComplete == TOTAL_TASKS) {
-                        maze->setAllTasksComplete();
+                        maze->setAllTasksComplete(player->currRoom);
                     }
 
                     if (task == 1) {
                         enemyCleared = true;
                         maze->clearEnemies();
-                    } else if (task == 2) {
+                    } else {
                         powerupsReleased = true;
                         maze->releasePowerups();
                     }
@@ -164,7 +160,7 @@ void Game::Update(double currentTime, double dt) {
             State = GAME_LOSE;
         }
 
-        auto win = maze->isInExitNode(player->currRoom);
+        auto win = maze->isCollideWithExitNode(*player, player->currRoom);
         if (win) {
             State = GAME_WIN;
         }

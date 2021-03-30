@@ -1,5 +1,7 @@
 #include "game_object.h"
 
+GameObject::GameObject() {}
+
 GameObject::GameObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity)
         : Position(pos), Size(size), Velocity(velocity), Color(color), Rotation(0.0f), Sprite(sprite), flipped(false) {}
 
@@ -32,10 +34,10 @@ bool GameObject::contains(const GameObject &b, float threshold) const {
     return areaOverlap(b) >= threshold * b.area();
 }
 
-bool GameObject::partialContains(const GameObject &b) const {
-    return contains(b, 0.45);
-}
-
 glm::vec2 GameObject::getCenterCoordinate() const {
     return Position + Size / 2.0f;
+}
+
+void GameObject::move(const glm::vec2 &displace) {
+    Position += displace;
 }
