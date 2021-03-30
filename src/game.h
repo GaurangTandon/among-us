@@ -12,6 +12,7 @@
 enum GameState {
     GAME_ACTIVE,
     GAME_MENU,
+    GAME_FLY,
     GAME_WIN,
     GAME_LOSE
 };

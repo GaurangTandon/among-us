@@ -27,3 +27,8 @@ Requires freetype, glad, glfw3 and glm to be in the include path. Best way to do
 Maze is first generated following the standard iterative procedure given on [Wikipedia](https://en.wikipedia.org/wiki/Maze_generation_algorithm#Iterative_implementation).
 
 However, after that, I delete some walls in order to create circularity in the maze.
+
+## Animations
+
+- The player walking is animated with 6 separate sprites for walking and 1 for resting.
+- When the maze is over, the pelican flys and takes away the player into distant space.

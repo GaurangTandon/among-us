@@ -30,7 +30,6 @@ private:
     // fW[i][j] = { next_node, shortest_dist }
     std::vector<std::vector<std::pair<int, int>>> floydWarshall;
 
-
     std::vector<std::bitset<4>> generateGraph(int seed = 0) {
         if (seed) srand(seed);
         else srand(time(nullptr));
@@ -99,6 +98,7 @@ private:
         }
 
         int LOOPS = 10;
+        if (width < 5) LOOPS = 0;
         std::random_device rd;
         for (int _ = 0; _ < LOOPS; _++) {
             int room = rd() % door_data.size();
@@ -127,7 +127,6 @@ private:
 
             if (not found) LOOPS++;
         }
-        std::cout << LOOPS << std::endl;
 
         for (int i = 0; i < nodes; i++) floydWarshall[i][i] = {0, 0};
 
@@ -199,6 +198,8 @@ private:
     }
 
 public:
+    glm::vec2 pelicanPosition;
+
     GameMaze(int tex_count, int w = 3, int h = 3) : width(w), height(h) {
         generateRooms(tex_count);
 
@@ -314,12 +315,13 @@ public:
         std::mt19937 mt(dev());
         std::shuffle(choice.begin(), choice.end(), mt);
 
-        const int take = int(0.2f * rooms.size());
+        const int take = int(0.4f * rooms.size());
 
         for (int i = 0; i < take; i++) {
             auto roomIdx = choice[i];
 
-            rooms[roomIdx].addTask(getPlayerPos(roomIdx), 3 + dev() % 2);
+            int powerup = dev() % 10 <= 7;
+            rooms[roomIdx].addTask(getPlayerPos(roomIdx), powerup ? 3 : 4);
         }
     }
 
@@ -328,7 +330,12 @@ public:
     }
 
     bool isCollideWithExitNode(const GameObject &player, int currRoom) {
-        return exitNodeEnabled and getExitRoomIndex() == currRoom and rooms[currRoom].exitNodeOverlap(player);
+        bool yes = exitNodeEnabled and getExitRoomIndex() == currRoom and rooms[currRoom].exitNodeOverlap(player);
+        if (yes) {
+            rooms[currRoom].removeExit();
+            pelicanPosition = rooms[currRoom].getExitNodePosition();
+        }
+        return yes;
     }
 
     void setAllTasksComplete(int playerRoom) {

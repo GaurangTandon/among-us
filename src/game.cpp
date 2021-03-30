@@ -7,13 +7,14 @@
 #include "text_renderer.h"
 
 
-constexpr int MAZE_WIDTH = 10;
-constexpr int MAZE_HEIGHT = 10;
+constexpr int MAZE_WIDTH = 3;
+constexpr int MAZE_HEIGHT = 3;
 
 SpriteRenderer *Renderer;
 GameMaze *maze;
 Player *player;
 TextRenderer *Text;
+GameObject *flyingPelican;
 
 int tasksComplete = 0;
 constexpr int TOTAL_TASKS = 2;
@@ -84,6 +85,7 @@ void Game::Init() {
     ResourceManager::LoadTexture(pathToTexture("shield.png"), true, "powerup_release");
 
     ResourceManager::LoadTexture(pathToTexture("pelican.png"), true, "exit");
+    ResourceManager::LoadTexture(pathToTexture("pelican-flying.png"), true, "flying-pelican");
 
     for (int i = 0; i < ROOM_TEX_COUNT; i++) {
         std::string name = "room" + std::to_string(i);
@@ -162,6 +164,16 @@ void Game::Update(double currentTime, double dt) {
 
         auto win = maze->isCollideWithExitNode(*player, player->currRoom);
         if (win) {
+            auto flyPeliTex = ResourceManager::GetTexture("flying-pelican");
+            flyingPelican = new GameObject(maze->pelicanPosition, GameRoom::getPelicanSize(), flyPeliTex);
+            State = GAME_FLY;
+        }
+    } else if (State == GAME_FLY) {
+        glm::vec2 displace(3.00f, -1.00f);
+        flyingPelican->move(displace);
+        auto pos = flyingPelican->Position;
+
+        if (pos[0] >= SCREEN_WIDTH or pos[1] >= SCREEN_HEIGHT) {
             State = GAME_WIN;
         }
     }
@@ -171,40 +183,45 @@ void Game::Update(double currentTime, double dt) {
 void Game::ProcessInput(double dt) {
 #define pressed(x) (this->Keys[x])
 
-    if (this->State == GAME_ACTIVE) {
-        auto velocity = getVelocty(dt);
+    switch (this->State) {
+        case GAME_ACTIVE: {
+            auto velocity = getVelocty(dt);
 
-        std::map<unsigned int, glm::vec2> movers = {
-                {GLFW_KEY_W, glm::vec2(0.0f, -1.0f)},
-                {GLFW_KEY_A, glm::vec2(-1.0f, 0.0f)},
-                {GLFW_KEY_S, glm::vec2(0.0f, 1.0f)},
-                {GLFW_KEY_D, glm::vec2(1.0f, 0.0f)}
-        };
+            std::map<unsigned int, glm::vec2> movers = {
+                    {GLFW_KEY_W, glm::vec2(0.0f, -1.0f)},
+                    {GLFW_KEY_A, glm::vec2(-1.0f, 0.0f)},
+                    {GLFW_KEY_S, glm::vec2(0.0f, 1.0f)},
+                    {GLFW_KEY_D, glm::vec2(1.0f, 0.0f)}
+            };
 
-        for (auto &[key, displace]: movers) {
-            if (pressed(key)) {
-                auto mazeDisplace = -displace * velocity;
+            for (auto &[key, displace]: movers) {
+                if (pressed(key)) {
+                    auto mazeDisplace = -displace * velocity;
 
-                maze->moveAll(mazeDisplace);
+                    maze->moveAll(mazeDisplace);
 
-                int roomBelongs = maze->find_player_room(*player);
+                    int roomBelongs = maze->find_player_room(*player);
 
-                if (roomBelongs == -1) maze->moveAll(-mazeDisplace);
-                else player->currRoom = roomBelongs;
+                    if (roomBelongs == -1) maze->moveAll(-mazeDisplace);
+                    else player->currRoom = roomBelongs;
 
-                break;
+                    break;
+                }
             }
-        }
 
-        bool wors_key = pressed(GLFW_KEY_W) or pressed(GLFW_KEY_S);
-        bool a_key = pressed(GLFW_KEY_A);
-        bool d_key = pressed(GLFW_KEY_D);
-        player->update(wors_key, a_key, d_key);
-    } else {
-        if (pressed(GLFW_KEY_SPACE)) {
-            Reset();
-            this->State = GAME_ACTIVE;
+            bool wors_key = pressed(GLFW_KEY_W) or pressed(GLFW_KEY_S);
+            bool a_key = pressed(GLFW_KEY_A);
+            bool d_key = pressed(GLFW_KEY_D);
+            player->update(wors_key, a_key, d_key);
         }
+            break;
+        case GAME_FLY:
+            break;
+        default:
+            if (pressed(GLFW_KEY_SPACE)) {
+                Reset();
+                this->State = GAME_ACTIVE;
+            }
     }
 }
 
@@ -249,9 +266,14 @@ void Game::Render() {
             renderLocation("Impostor", maze->getEnemyRoom());
         }
 
-        if (maze->isAllTasksComplete()) {
-            renderLocation("Exit room", maze->getExitRoomIndex());
-        }
+//        if (maze->isAllTasksComplete()) {
+//            renderLocation("Exit room", maze->getExitRoomIndex());
+//        }
+    };
+
+    auto renderFlying = [&]() {
+        maze->Draw(*Renderer);
+        flyingPelican->Draw(*Renderer);
     };
 
     auto renderTextCenter = [&](const std::vector<std::string> &texts) {
@@ -297,6 +319,9 @@ void Game::Render() {
             break;
         case GAME_MENU:
             renderMenu();
+            break;
+        case GAME_FLY:
+            renderFlying();
             break;
         case GAME_WIN:
             renderWinner();

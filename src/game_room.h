@@ -38,6 +38,12 @@ public:
     void setExitNode();
 
     bool exitNodeOverlap(const GameObject &b);
+
+    glm::vec2 getExitNodePosition();
+
+    static glm::vec2 getPelicanSize();
+
+    void removeExit();
 };
 
 

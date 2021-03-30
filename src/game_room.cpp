@@ -88,17 +88,29 @@ void GameRoom::removeTask(int type) {
     }
 }
 
+glm::vec2 GameRoom::getPelicanSize() {
+    return glm::vec2(0.9f * SIZE[0], 0.4f * SIZE[1]);
+}
+
 void GameRoom::setExitNode() {
     isExitNode = true;
     tasks.clear();
 
     auto exitTex = ResourceManager::GetTexture("exit");
     auto pos = getCenterCoordinate();
-    auto size = glm::vec2(0.9f * Size[0], 0.4f * Size[1]);
+    auto size = getPelicanSize();
     pos -= size / 2.0f;
     exitLabel = GameObject(pos, size, exitTex);
 }
 
 bool GameRoom::exitNodeOverlap(const GameObject &b) {
     return isExitNode and exitLabel.hasOverlap(b);
+}
+
+glm::vec2 GameRoom::getExitNodePosition() {
+    return exitLabel.Position;
+}
+
+void GameRoom::removeExit() {
+    isExitNode = false;
 }
