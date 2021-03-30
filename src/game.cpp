@@ -74,7 +74,7 @@ void Game::Init() {
     // load textures
     ResourceManager::LoadTexture(pathToTexture("transparent.png"), true, "door");
     ResourceManager::LoadTexture(pathToTexture("rest.png"), true, "player");
-    ResourceManager::LoadTexture(pathToTexture("bowser_transparent.png"), true, "bowser");
+    ResourceManager::LoadTexture(pathToTexture("elite.png"), true, "elite");
 
     ResourceManager::LoadTexture(pathToTexture("black-square.png"), false, "wall");
 
