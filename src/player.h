@@ -6,7 +6,7 @@
 #include <vector>
 #include "game_object.h"
 
-const glm::vec2 PLAYER_SIZE = glm::vec2(40.0f, 40.0f);
+const glm::vec2 PLAYER_SIZE = glm::vec2(35.0f, 40.0f);
 
 class Player : public GameObject {
 private:
