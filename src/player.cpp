@@ -23,9 +23,10 @@ void Player::update(bool wOrS, bool a, bool d) {
         this->Sprite = restSp;
     }
 
-    // TODO: invert direction of image based on a or d
     if (a) {
+        flipped = true;
     } else if (d) {
+        flipped = false;
     }
 }
 

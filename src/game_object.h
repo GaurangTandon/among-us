@@ -18,6 +18,7 @@ public:
     float Rotation;
     // render state
     Texture2D Sprite;
+    bool flipped;
 
     // constructor(s)
     GameObject();
