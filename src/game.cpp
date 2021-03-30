@@ -7,8 +7,8 @@
 #include "text_renderer.h"
 
 
-constexpr int MAZE_WIDTH = 5;
-constexpr int MAZE_HEIGHT = 5;
+constexpr int MAZE_WIDTH = 10;
+constexpr int MAZE_HEIGHT = 10;
 
 SpriteRenderer *Renderer;
 GameMaze *maze;

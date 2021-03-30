@@ -31,7 +31,7 @@ private:
     std::vector<std::vector<std::pair<int, int>>> floydWarshall;
 
 
-    std::vector<std::bitset<4>> generateTree(int seed = 0) {
+    std::vector<std::bitset<4>> generateGraph(int seed = 0) {
         if (seed) srand(seed);
         else srand(time(nullptr));
 
@@ -52,11 +52,22 @@ private:
         visited[start_x][start_y] = true;
         st.push({start_x, start_y});
 
+        auto coord_valid = [&](int x, int y) {
+            return x >= 0 and x < width and y >= 0 and y < height;
+        };
         auto valid = [&](int x, int y) {
-            return x >= 0 and x < width and y >= 0 and y < height and not visited[x][y];
+            return coord_valid(x, y) and not visited[x][y];
         };
 
         std::vector<std::bitset<4>> door_data(width * height, 0);
+
+        auto add_door = [&](int roomA, int roomB, int door_idx) {
+            door_data[roomA][door_idx] = true;
+            door_data[roomB][rev_idx[door_idx]] = true;
+
+            floydWarshall[roomA][roomB] = {roomB, 1};
+            floydWarshall[roomB][roomA] = {roomA, 1};
+        };
 
         while (not st.empty()) {
             auto &[nx, ny] = st.top();
@@ -84,13 +95,39 @@ private:
             st.push({cx, cy});
 
             auto chosen_node_idx = getRoomIndex(cx, cy);
-
-            door_data[node_idx][idx] = true;
-            door_data[chosen_node_idx][rev_idx[idx]] = true;
-
-            floydWarshall[node_idx][chosen_node_idx] = {chosen_node_idx, 1};
-            floydWarshall[chosen_node_idx][node_idx] = {node_idx, 1};
+            add_door(node_idx, chosen_node_idx, idx);
         }
+
+        int LOOPS = 10;
+        std::random_device rd;
+        for (int _ = 0; _ < LOOPS; _++) {
+            int room = rd() % door_data.size();
+
+            auto[rx, ry] = getRoomCoordinate(room);
+
+            std::vector<int> order = {0, 1, 2, 3};
+            for (int i = 0; i < 4; i++)
+                std::swap(order[i], order[rd() % (i + 1)]);
+
+            bool found = false;
+            for (int door_idx = 0; door_idx < 4; door_idx++) {
+                auto[cx, cy] = std::make_pair(rx + dx[door_idx], ry + dy[door_idx]);
+
+                if (not coord_valid(cx, cy)) continue;
+
+                if (not door_data[room][door_idx]) {
+                    found = true;
+
+                    auto chosen_node_idx = getRoomIndex(cx, cy);
+                    add_door(room, chosen_node_idx, door_idx);
+
+                    break;
+                }
+            }
+
+            if (not found) LOOPS++;
+        }
+        std::cout << LOOPS << std::endl;
 
         for (int i = 0; i < nodes; i++) floydWarshall[i][i] = {0, 0};
 
@@ -116,7 +153,7 @@ private:
 
     void generateRooms(int texture_count) {
         int nodes = width * height;
-        auto treeData = generateTree();
+        auto graphData = generateGraph();
         rooms.reserve(nodes);
 
         glm::vec2 first_room_pos;
@@ -132,7 +169,7 @@ private:
             auto position = first_room_pos + offset;
 
             auto roomSprite = ResourceManager::GetTexture("room" + std::to_string(room_idx % texture_count));
-            rooms.emplace_back(position, roomSprite, treeData[room_idx]);
+            rooms.emplace_back(position, roomSprite, graphData[room_idx]);
         }
     }
 

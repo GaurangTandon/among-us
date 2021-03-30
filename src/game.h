@@ -19,7 +19,7 @@ enum GameState {
 class Game {
 public:
     static constexpr int ROOM_TEX_COUNT = 4;
-    static constexpr int DURATION = 50;
+    static constexpr int DURATION = 100;
     // game state
     GameState State;
     bool Keys[1024];
