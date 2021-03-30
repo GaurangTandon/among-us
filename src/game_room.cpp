@@ -99,7 +99,7 @@ int GameRoom::overlapsTask(const GameObject &object) {
 }
 
 bool GameRoom::addTask(const glm::vec2 &position, int type) {
-    const auto &taskTex = ResourceManager::GetTexture((type == 1) ? "sword" : "shield");
+    const auto &taskTex = ResourceManager::GetTexture((type == 1) ? "enemy_killer" : "powerup_release");
 
     auto task = Task(position, taskTex, type);
     tasks.push_back(task);

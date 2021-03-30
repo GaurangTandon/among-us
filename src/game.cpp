@@ -78,9 +78,11 @@ void Game::Init() {
 
     ResourceManager::LoadTexture(pathToTexture("black-square.png"), false, "wall");
 
-    ResourceManager::LoadTexture(pathToTexture("obstacle.png"), true, "obstacle");
-    ResourceManager::LoadTexture(pathToTexture("sword.png"), true, "sword");
-    ResourceManager::LoadTexture(pathToTexture("shield.png"), true, "shield");
+    ResourceManager::LoadTexture(pathToTexture("flag.png"), true, "points_boost");
+    ResourceManager::LoadTexture(pathToTexture("sword.png"), true, "obstacle");
+
+    ResourceManager::LoadTexture(pathToTexture("obstacle.png"), true, "enemy_killer");
+    ResourceManager::LoadTexture(pathToTexture("shield.png"), true, "powerup_release");
 
     for (int i = 0; i < ROOM_TEX_COUNT; i++) {
         std::string name = "room" + std::to_string(i);
