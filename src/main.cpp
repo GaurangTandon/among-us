@@ -31,15 +31,15 @@ void renderLoop(GLFWwindow *window) {
 
     amongUs.Init();
 
-    double deltaTime = 0.0f, lastFrame = glfwGetTime();
+    double lastFrame = glfwGetTime();
 
     while (not glfwWindowShouldClose(window)) {
         double currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
+        double deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         glfwPollEvents();
 
-        amongUs.Update(currentFrame, deltaTime);
+        amongUs.Update(deltaTime);
         amongUs.ProcessInput(deltaTime);
 
         glClearColor(0.0f, 0.5f, 0.5f, 1.0f);

@@ -7,14 +7,15 @@
 #include "text_renderer.h"
 
 
-constexpr int MAZE_WIDTH = 3;
-constexpr int MAZE_HEIGHT = 3;
+constexpr int MAZE_WIDTH = 10;
+constexpr int MAZE_HEIGHT = 10;
 
 SpriteRenderer *Renderer;
 GameMaze *maze;
 Player *player;
 TextRenderer *Text;
 GameObject *flyingPelican;
+int enemyCount;
 
 int tasksComplete = 0;
 constexpr int TOTAL_TASKS = 2;
@@ -36,7 +37,7 @@ Game::~Game() {
 #define pathToFont(filename) "assets/fonts/" filename
 
 void Game::Reset() {
-    maze = new GameMaze(ROOM_TEX_COUNT, MAZE_WIDTH, MAZE_HEIGHT);
+    maze = new GameMaze(ROOM_TEX_COUNT, MAZE_WIDTH, MAZE_HEIGHT, enemyCount);
 
     {
         auto player_tex = ResourceManager::GetTexture("player");
@@ -118,7 +119,7 @@ float getVelocty(double dt) {
     return 400.0f * float(dt);
 }
 
-void Game::Update(double currentTime, double dt) {
+void Game::Update(double dt) {
     if (State == GAME_ACTIVE) {
         {
             auto velocity = getVelocty(dt);
@@ -217,10 +218,30 @@ void Game::ProcessInput(double dt) {
             break;
         case GAME_FLY:
             break;
-        default:
-            if (pressed(GLFW_KEY_SPACE)) {
+        case GAME_MENU: {
+            std::vector<int> counter = {0, 1, 3, 5, 10};
+
+            bool press = false;
+            int key = 0;
+            for (int i = 1; i <= 4; i++) {
+                if (pressed(GLFW_KEY_0 + i)) {
+                    press = true;
+                    key = i;
+                    break;
+                }
+            }
+
+            if (press) {
+                enemyCount = counter[key];
                 Reset();
                 this->State = GAME_ACTIVE;
+            }
+        }
+
+            break;
+        default:
+            if (pressed(GLFW_KEY_SPACE)) {
+                this->State = GAME_MENU;
             }
     }
 }
@@ -261,9 +282,12 @@ void Game::Render() {
         };
 
         renderLocation("Player", player->currRoom);
-        auto room = maze->getEnemyRoom();
-        if (room != -1) {
-            renderLocation("Impostor", maze->getEnemyRoom());
+        auto rooms = maze->getEnemiesRooms();
+
+        if (rooms.size() < 5) {
+            for (auto i = 0; i < rooms.size(); i++) {
+                renderLocation("Impostor " + std::to_string(i), rooms[i]);
+            }
         }
 
 //        if (maze->isAllTasksComplete()) {
@@ -276,22 +300,27 @@ void Game::Render() {
         flyingPelican->Draw(*Renderer);
     };
 
-    auto renderTextCenter = [&](const std::vector<std::string> &texts) {
+    auto renderTextCenter = [&](const std::vector<std::string> &texts, float xLeft = 350.0f) {
         float yOffset = 200.0f;
 
         for (auto &str : texts) {
-            Text->RenderText(str, 350.0f, yOffset, 2.0f, glm::vec3(1.0f, 0.4f, 1.0f));
+            Text->RenderText(str, xLeft, yOffset, 2.0f, glm::vec3(1.0f, 0.4f, 1.0f));
             yOffset += 2 * CHAR_HEIGHT;
         }
     };
 
     auto renderMenu = [&]() {
         std::vector<std::string> textsToRender = {
-                "Welcome to AmongUs!",
-                "Press Space to start"
+                "Welcome to AmongHalo!",
+                "Choose difficulty below:",
+                "",
+                "Easy: one enemy, press 1",
+                "Normal: three enemies, press 2",
+                "Heroic: five enemies, press 3",
+                "Legendary: ten enemies, press 4",
         };
 
-        renderTextCenter(textsToRender);
+        renderTextCenter(textsToRender, 250.0f);
     };
 
     auto renderWinner = [&]() {

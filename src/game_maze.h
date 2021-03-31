@@ -27,6 +27,7 @@ private:
     std::vector<GameRoom> rooms;
     std::pair<int, int> exitRoom;
     int width, height;
+    int enemyCount;
     // fW[i][j] = { next_node, shortest_dist }
     std::vector<std::vector<std::pair<int, int>>> floydWarshall;
 
@@ -97,10 +98,12 @@ private:
             add_door(node_idx, chosen_node_idx, idx);
         }
 
-        int LOOPS = 10;
-        if (width < 5) LOOPS = 0;
+        int LOOP_ROOMS = int(0.05f * door_data.size());
+
+        if (width < 5) LOOP_ROOMS = 0;
+
         std::random_device rd;
-        for (int _ = 0; _ < LOOPS; _++) {
+        for (int _ = 0; _ < LOOP_ROOMS; _++) {
             int room = rd() % door_data.size();
 
             auto[rx, ry] = getRoomCoordinate(room);
@@ -125,7 +128,7 @@ private:
                 }
             }
 
-            if (not found) LOOPS++;
+            if (not found) LOOP_ROOMS++;
         }
 
         for (int i = 0; i < nodes; i++) floydWarshall[i][i] = {0, 0};
@@ -172,9 +175,18 @@ private:
         }
     }
 
-    void addNewEnemy(int room = 0) {
+    void addNewEnemies(int playerRoom) {
+        auto far_rooms = getFarthestRooms(playerRoom);
         auto enemy_tex = ResourceManager::GetTexture("elite");
-        enemies.emplace_back(Player(room, getPlayerPos(room), enemy_tex, {enemy_tex}));
+
+        int step = far_rooms.size() / (enemyCount + 1);
+        int curr_room = 0;
+
+        for (int i = 0; i < enemyCount; i++) {
+            auto room = far_rooms[curr_room];
+            enemies.emplace_back(Player(room, getPlayerPos(room), enemy_tex, {enemy_tex}));
+            curr_room += step;
+        }
     }
 
     std::vector<int> getFarthestRooms(int sourceRoom) {
@@ -200,10 +212,10 @@ private:
 public:
     glm::vec2 pelicanPosition;
 
-    GameMaze(int tex_count, int w = 3, int h = 3) : width(w), height(h) {
+    GameMaze(int tex_count, int w = 3, int h = 3, int ene_count = 1) : width(w), height(h), enemyCount(ene_count) {
         generateRooms(tex_count);
 
-        addNewEnemy();
+        addNewEnemies(getRoomIndex(base_room_coordinate()));
 
         addTasks(getRoomIndex(base_room_coordinate()));
 
@@ -217,7 +229,11 @@ public:
     }
 
     bool moveEnemy(int targetRoom, const GameObject &player, float velocity) {
-        auto move_towards_target = [&velocity](GameObject &object, const glm::vec2 &targetPos) {
+        auto getVelocity = [&velocity]() {
+            return ((rand() % 150) / 100.0f) * velocity;
+        };
+
+        auto move_towards_target = [&getVelocity](GameObject &object, const glm::vec2 &targetPos) {
             auto &currPos = object.Position;
             std::vector<int> indices = {0, 1};
             if (rand() % 2) indices = {1, 0};
@@ -227,7 +243,7 @@ public:
                 if (diff < 3) continue;
 
                 float sign = currPos[i] > targetPos[i] ? -1 : 1;
-                currPos[i] += velocity * sign;
+                currPos[i] += getVelocity() * sign;
                 break;
             }
         };
@@ -249,9 +265,11 @@ public:
                 enemy.currRoom = nextRoom;
             } else if (currRoomObj.contains(enemy, 0.01f)) {
                 auto dir = glm::normalize(nextRoomObj.Position - currRoomObj.Position);
-                enemy.Position += dir * velocity;
+                enemy.Position += dir * getVelocity();
             } else {
-                std::cout << currRoom << " " << nextRoom << std::endl;
+                auto dir = glm::normalize(currRoomObj.Position - enemy.Position);
+                enemy.Position += dir * getVelocity();
+                // :(
 //                assert(false);
             }
         }
@@ -359,9 +377,10 @@ public:
         return getRoomIndex(p.first, p.second);
     }
 
-    int getEnemyRoom() {
-        if (enemies.empty()) return -1;
-        return enemies[0].currRoom;
+    std::vector<int> getEnemiesRooms() {
+        std::vector<int> res;
+        for (const auto &en : enemies) res.push_back(en.currRoom);
+        return res;
     }
 
     int getExitRoomIndex() {
