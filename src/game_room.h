@@ -31,7 +31,7 @@ public:
 
     int overlapsTask(const GameObject &object);
 
-    bool addTask(const glm::vec2 &position, int type);
+    bool addTask(int type);
 
     void removeTask(int type);
 

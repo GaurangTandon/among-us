@@ -205,7 +205,7 @@ private:
         for (int type = 1; type <= 2; type++) {
             auto roomIndex = roomIndices[type - 1];
             auto &randRoomObj = rooms[roomIndex];
-            randRoomObj.addTask(getPlayerPos(roomIndex), type);
+            randRoomObj.addTask(type);
         }
     }
 
@@ -345,7 +345,7 @@ public:
             auto roomIdx = choice[i];
 
             int powerup = dev() % 10 <= 7;
-            rooms[roomIdx].addTask(getPlayerPos(roomIdx), powerup ? 3 : 4);
+            rooms[roomIdx].addTask(powerup ? 3 : 4);
         }
     }
 

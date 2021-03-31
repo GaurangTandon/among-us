@@ -68,10 +68,13 @@ int GameRoom::overlapsTask(const GameObject &object) {
     return 0;
 }
 
-bool GameRoom::addTask(const glm::vec2 &position, int type) {
+bool GameRoom::addTask(int type) {
     const auto taskTexPath =
             type == 1 ? "enemy_killer" : type == 2 ? "powerup_release" : type == 3 ? "obstacle" : "points";
     const auto &taskTex = ResourceManager::GetTexture(taskTexPath);
+
+    auto offset = glm::vec2(rand() % int(SIZE[0] - TASK_SIZE[0]), rand() % int(SIZE[1] - TASK_SIZE[1]));
+    auto position = Position + offset;
 
     auto task = Task(position, taskTex, type);
     tasks.push_back(task);
