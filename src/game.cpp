@@ -299,7 +299,7 @@ void Game::Render() {
         flyingPelican->Draw(*Renderer);
     };
 
-    auto renderTextCenter = [&](const std::vector<std::string> &texts, float xLeft = 350.0f) {
+    auto renderTextCenter = [&](const std::vector<std::string> &texts, float xLeft = 250.0f) {
         float yOffset = 200.0f;
 
         for (auto &str : texts) {
@@ -319,12 +319,14 @@ void Game::Render() {
                 "Legendary: ten enemies, press 4",
         };
 
-        renderTextCenter(textsToRender, 250.0f);
+        renderTextCenter(textsToRender);
     };
 
     auto renderWinner = [&]() {
         std::vector<std::string> textsToRender = {
                 "You won the game!",
+                "Your final score: " + std::to_string(player->getHealth()),
+                "",
                 "Press Space to play again!"
         };
 
