@@ -228,9 +228,15 @@ public:
         for (auto &enemy : enemies) enemy.Draw(renderer);
     }
 
-    bool moveEnemy(int targetRoom, const GameObject &player, float velocity) {
-        auto getVelocity = [&velocity]() {
-            return ((rand() % 150) / 100.0f) * velocity;
+    bool moveEnemy(int targetRoom, const GameObject &player, float playerVelocity) {
+        auto shortestDist = [&](int enemyCurr) {
+            return floydWarshall[enemyCurr][targetRoom].second;
+        };
+        auto getVelocity = [&playerVelocity](int shortestDist = 0) {
+            auto mult = std::min(1 + std::pow(shortestDist / 2.0f, 1.5f), 3.0f);
+            auto vel = (playerVelocity / 2) * mult;
+            vel *= (rand() % 150) / 100.0f;
+            return vel;
         };
 
         auto move_towards_target = [&getVelocity](GameObject &object, const glm::vec2 &targetPos) {
@@ -265,10 +271,10 @@ public:
                 enemy.currRoom = nextRoom;
             } else if (currRoomObj.contains(enemy, 0.01f)) {
                 auto dir = glm::normalize(nextRoomObj.Position - currRoomObj.Position);
-                enemy.Position += dir * getVelocity();
+                enemy.Position += dir * getVelocity(shortestDist(currRoom));
             } else {
                 auto dir = glm::normalize(currRoomObj.Position - enemy.Position);
-                enemy.Position += dir * getVelocity();
+                enemy.Position += dir * getVelocity(1);
                 // :(
 //                assert(false);
             }

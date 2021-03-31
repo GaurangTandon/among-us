@@ -123,9 +123,8 @@ void Game::Update(double dt) {
     if (State == GAME_ACTIVE) {
         {
             auto velocity = getVelocty(dt);
-            auto enemyVelocity = velocity / 2;
 
-            bool hit = maze->moveEnemy(player->currRoom, *player, enemyVelocity);
+            bool hit = maze->moveEnemy(player->currRoom, *player, velocity);
 
             if (hit) player->enemyHit();
         }

@@ -3,7 +3,7 @@
 const int HEALTH_DELTA = 10;
 
 bool Player::isDead() {
-    return hasEnemyHit or health < 0;
+    return hasEnemyHit or health <= 0;
 }
 
 int Player::getHealth() {
