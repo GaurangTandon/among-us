@@ -160,8 +160,8 @@ private:
 
         glm::vec2 first_room_pos;
         auto[cx, cy] = base_room_coordinate();
-        first_room_pos[0] = SCREEN_WIDTH / 2 - cx * GameRoom::SIZE[0];
-        first_room_pos[1] = SCREEN_HEIGHT / 2 - cy * GameRoom::SIZE[1];
+        first_room_pos[0] = SCREEN_WIDTH / 2 - cx * GameRoom::SIZE[0] - GameRoom::SIZE[0] / 2;
+        first_room_pos[1] = SCREEN_HEIGHT / 2 - cy * GameRoom::SIZE[1] - GameRoom::SIZE[1] / 2;;
 
         for (int room_idx = 0; room_idx < nodes; room_idx++) {
             int row = room_idx / width, col = room_idx % width;
